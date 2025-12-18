@@ -29,8 +29,24 @@ if (empty($title)) {
 }
 
 // Validate file upload
-if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
-    sendJsonResponse(false, null, 'File upload failed');
+if (!$file) {
+    error_log("Upload Error: No file uploaded");
+    sendJsonResponse(false, null, 'No file uploaded');
+}
+
+if ($file['error'] !== UPLOAD_ERR_OK) {
+    $errorMessages = [
+        UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
+        UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
+        UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+        UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+        UPLOAD_ERR_EXTENSION => 'Upload stopped by extension'
+    ];
+    $errorMsg = $errorMessages[$file['error']] ?? 'Unknown upload error';
+    error_log("Upload Error: " . $errorMsg . " (Code: " . $file['error'] . ")");
+    sendJsonResponse(false, null, $errorMsg);
 }
 
 // Validate file type
@@ -64,12 +80,22 @@ $filepath = $uploadDir . $filename;
 
 // Ensure upload directory exists
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+    if (!mkdir($uploadDir, 0755, true)) {
+        error_log("Upload Error: Could not create uploads directory");
+        sendJsonResponse(false, null, 'Server configuration error: uploads directory');
+    }
+}
+
+// Check if directory is writable
+if (!is_writable($uploadDir)) {
+    error_log("Upload Error: uploads directory is not writable");
+    sendJsonResponse(false, null, 'Server configuration error: uploads directory not writable');
 }
 
 // Move uploaded file
 if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-    sendJsonResponse(false, null, 'Failed to save file');
+    error_log("Upload Error: Failed to move file from " . $file['tmp_name'] . " to " . $filepath);
+    sendJsonResponse(false, null, 'Failed to save file to server');
 }
 
 // Extract text based on file type
@@ -114,6 +140,8 @@ if ($result['success']) {
         'word_count' => str_word_count($extractedText)
     ], 'Note uploaded and processed successfully');
 } else {
+    // Log the database error
+    error_log("Database Error: Failed to save note - " . ($result['message'] ?? 'Unknown error'));
     // Delete uploaded file if database save fails
     if (file_exists($filepath)) {
         unlink($filepath);
