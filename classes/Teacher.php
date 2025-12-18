@@ -32,7 +32,6 @@ class Teacher
             LEFT JOIN notes n ON u.user_id = n.user_id
             LEFT JOIN quiz_attempts qa ON u.user_id = qa.user_id
             WHERE ts.teacher_id = :teacher_id AND u.role = 'student'
-            WHERE ts.teacher_id = :teacher_id AND u.role = 'student'
             GROUP BY u.user_id, u.full_name, u.email, u.created_at, ts.enrolled_date
             ORDER BY u.full_name ASC
         ";
