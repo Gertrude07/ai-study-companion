@@ -157,6 +157,12 @@ $enrollmentCount = $teacherObj->getEnrollmentCount($teacherId);
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
+                                            <button
+                                                onclick="confirmRemoveStudent(<?php echo $student['user_id']; ?>, '<?php echo htmlspecialchars($student['full_name'], ENT_QUOTES); ?>')"
+                                                class="btn btn-sm"
+                                                style="background: #EF4444; color: white; margin-left: 0.5rem;">
+                                                <i class="fas fa-user-times"></i> Remove
+                                            </button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -277,6 +283,34 @@ $enrollmentCount = $teacherObj->getEnrollmentCount($teacherId);
                 btn.innerHTML = originalHTML;
                 btn.style.background = 'rgba(255,255,255,0.2)';
             }, 2000);
+        }
+
+        // Remove student function
+        async function confirmRemoveStudent(studentId, studentName) {
+            if (!confirm(`Are you sure you want to remove ${studentName} from your class? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('student_id', studentId);
+
+                const response = await fetch('../../api/remove_student.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    location.reload(); // Reload to show updated list
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+            }
         }
     </script>
 </body>

@@ -25,6 +25,20 @@ $totalQuizzes = $quizObj->getTotalQuizCount($userId);
 $averageScore = $quizObj->getAverageScore($userId);
 $recentNotes = $noteObj->getRecentByUser($userId, 5);
 
+// Get enrolled teachers
+require_once __DIR__ . '/../config/database.php';
+$database = new Database();
+$conn = $database->getConnection();
+$query = "SELECT u.user_id, u.full_name, u.email, ts.enrolled_date 
+          FROM teacher_students ts 
+          JOIN users u ON ts.teacher_id = u.user_id 
+          WHERE ts.student_id = :student_id 
+          ORDER BY ts.enrolled_date DESC";
+$stmt = $conn->prepare($query);
+$stmt->bindParam(':student_id', $userId, PDO::PARAM_INT);
+$stmt->execute();
+$enrolledTeachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 $pageTitle = 'Dashboard';
 ?>
 <!DOCTYPE html>
@@ -189,6 +203,48 @@ $pageTitle = 'Dashboard';
                     </div>
                     <div style="text-align: center; margin-top: 1.5rem;">
                         <a href="materials.php" class="btn btn-outline">View All Materials</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- My Classes Section -->
+            <div class="recent-section">
+                <h2>My Classes</h2>
+                <?php if (empty($enrolledTeachers)): ?>
+                    <div class="empty-state">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <p>Not enrolled in any class yet</p>
+                        <a href="#" onclick="showJoinClassModal(); return false;" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Join a Class
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="materials-list">
+                        <?php foreach ($enrolledTeachers as $teacher): ?>
+                            <div class="material-item">
+                                <div class="material-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="material-info">
+                                    <h3><?php echo htmlspecialchars($teacher['full_name']); ?></h3>
+                                    <p class="material-meta">
+                                        <i class="fas fa-envelope"></i>
+                                        <?php echo htmlspecialchars($teacher['email']); ?>
+                                    </p>
+                                    <p class="material-meta">
+                                        <i class="fas fa-calendar"></i>
+                                        Joined <?php echo timeAgo($teacher['enrolled_date']); ?>
+                                    </p>
+                                </div>
+                                <div class="material-actions">
+                                    <button
+                                        onclick="confirmLeaveClass(<?php echo $teacher['user_id']; ?>, '<?php echo htmlspecialchars($teacher['full_name'], ENT_QUOTES); ?>')"
+                                        class="btn btn-sm" style="background: #EF4444; color: white;">
+                                        <i class="fas fa-sign-out-alt"></i> Leave
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -368,6 +424,34 @@ $pageTitle = 'Dashboard';
                 joinBtn.innerHTML = '<i class="fas fa-check"></i> Join Class';
             }
         });
+
+        // Leave class function
+        async function confirmLeaveClass(teacherId, teacherName) {
+            if (!confirm(`Are you sure you want to leave ${teacherName}'s class? You will lose access to class discussions and messages.`)) {
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('teacher_id', teacherId);
+
+                const response = await fetch('../api/leave_class.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    location.reload(); // Reload to show updated list
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+            }
+        }
     </script>
 </body>
 
