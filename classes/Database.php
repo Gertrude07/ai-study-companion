@@ -3,9 +3,9 @@
 class Database
 {
     private $host = "localhost";
-    private $db_name = "study_companion";
-    private $username = "root";
-    private $password = "";
+    private $db_name = "webtech_2025A_gertrude_akagbo";
+    private $username = "gertrude.akagbo";
+    private $password = "Amazing1122@";
     private $conn;
 
     // Get database connection
