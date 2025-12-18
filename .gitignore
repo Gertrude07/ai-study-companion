@@ -9,7 +9,6 @@ uploads/*
 
 # Composer
 vendor/
-composer.lock
 
 # IDE
 .vscode/
