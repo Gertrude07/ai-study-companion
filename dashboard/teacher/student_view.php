@@ -236,99 +236,150 @@ $pageTitle = 'Student Details - ' . htmlspecialchars($student['full_name']);
                     </div>
                 </div>
             </div>
+
+            <!-- Chat Section -->
+            <div class="card" style="margin-top: 2rem;">
+                <h2><i class="fas fa-comments"></i> Chat with Student</h2>
+                <!-- Interface fixed via GitHub Sync -->
+                <div id="messagesContainer"
+                    style="height: 400px; overflow-y: auto; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+                    <div style="text-align: center; color: #64748b; padding-top: 2rem;">Loading messages...</div>
+                </div>
+                <form id="messageForm" style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="messageInput" placeholder="Type a message..."
+                        style="flex: 1; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.5rem;" required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </form>
+            </div>
         </main>
     </div>
 
+    <!-- Styles from messages.php -->
     <style>
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .data-table th {
-            background: #F9FAFB;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .data-table tbody tr:hover {
-            background: #F9FAFB;
-        }
-
-        .badge {
-            padding: 0.25rem 0.75rem;
+        .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
             border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 600;
+            margin-bottom: 0.75rem;
+            word-wrap: break-word;
+            clear: both;
         }
 
-        .badge-success {
-            background: #D1FAE5;
-            color: #10B981;
+        .message-sent {
+            background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
+            color: white !important;
+            float: right;
+            border-bottom-right-radius: 4px;
         }
 
-        .badge-warning {
-            background: #FEF3C7;
-            color: #F59E0B;
+        .message-sent * {
+            color: white !important;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+        .message-received {
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            color: #1F2937 !important;
+            float: left;
+            border-bottom-left-radius: 4px;
         }
 
-        .info-item {
-            padding: 1rem;
-            background: #F9FAFB;
-            border-radius: 8px;
+        .message-received * {
+            color: #1F2937 !important;
         }
 
-        .info-item strong {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #6B7280;
-            font-size: 0.875rem;
+        [data-theme="dark"] .message-received {
+            background: #2D3748;
+            border-color: #4A5568;
+            color: #E2E8F0 !important;
         }
 
-        .info-item span {
-            color: #1F2937;
-            font-size: 1rem;
+        [data-theme="dark"] .message-received * {
+            color: #E2E8F0 !important;
         }
 
-        [data-theme="light"] .data-table th {
-            background: #F9FAFB;
-            color: #374151;
-        }
-
-        [data-theme="light"] .data-table td {
-            color: #1F2937;
-        }
-
-        [data-theme="light"] .info-item {
-            background: #F9FAFB;
-        }
-
-        [data-theme="light"] .info-item strong {
-            color: #6B7280;
-        }
-
-        [data-theme="light"] .info-item span {
-            color: #1F2937;
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
         }
     </style>
+
+    <script>
+        const studentId = <?php echo $studentId; ?>;  // Load messages
+        async function loadMessages() {
+            try {
+                const response = await fetch(`../../api/get_messages.php?user_id=${studentId}`);
+                const result = await response.json();
+
+      const container = document.getElementById('messagesContainer');
+
+                if (result.success && result.data) {
+                    if (result.data.length === 0) {
+                        container.innerHTML = '<div style="text-align: center; color: #64748b; padding-top: 2rem;">No messages yet. Start the conversation!</div>';
+                        return;
+                    }
+
+                    container.innerHTML = result.data.map(msg => {
+                        const isSent = msg.sender_id == <?php echo $_SESSION['user_id']; ?>;
+                        return `
+                            <div class="message-bubble ${isSent ? 'message-sent' : 'message-received'}">
+                                <div>${escapeHtml(msg.message_text)}</div>
+                                <div class="message-time">${new Date(msg.sent_at).toLocaleString()}</div>
+                            </div>
+                        `;
+                    }).join('') + '<div style="clear: both;"></div>';
+
+                    container.scrollTop = container.scrollHeight;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Send message
+        document.getElementById('messageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            try {
+                const formData = new FormData();
+                formData.append('receiver_id', studentId);
+                formData.append('message', message);
+
+                const response = await fetch('../../api/send_message.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    input.value = '';
+                    loadMessages();
+                } else {
+                    alert(result.message || 'Failed to send');
+                }
+            } catch (error) {
+                console.error('Error sending:', error);
+                alert('Failed to send message');
+            }
+        });
+
+        // Auto refresh
+        loadMessages();
+        setInterval(loadMessages, 5000);
+    </script>
 </body>
 
 </html>
