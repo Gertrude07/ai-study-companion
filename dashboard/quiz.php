@@ -18,14 +18,14 @@ if (!isset($_GET['note_id'])) {
     exit;
 }
 
-$noteId = (int)$_GET['note_id'];
+$noteId = (int) $_GET['note_id'];
 
 // Get quiz questions for this note
 $studyMaterial = new StudyMaterial();
 
 try {
     $materials = $studyMaterial->getAllByNote($noteId);
-    
+
     // Find the quiz material
     $quizMaterial = null;
     foreach ($materials as $material) {
@@ -34,23 +34,23 @@ try {
             break;
         }
     }
-    
+
     if (!$quizMaterial) {
         $_SESSION['error'] = 'No quiz available for this note.';
         header('Location: materials.php');
         exit;
     }
-    
+
     $questions = $studyMaterial->getQuizQuestions($quizMaterial['material_id']);
-    
+
     if (empty($questions)) {
         $_SESSION['error'] = 'No questions found.';
         header('Location: materials.php');
         exit;
     }
-    
+
     $noteTitle = 'Quiz';
-    
+
 } catch (Exception $e) {
     $_SESSION['error'] = 'Error loading quiz: ' . $e->getMessage();
     header('Location: materials.php');
@@ -59,6 +59,7 @@ try {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,7 +84,7 @@ try {
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .quiz-header h1 {
@@ -148,7 +149,7 @@ try {
             border-radius: 12px;
             padding: 2rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             display: none;
         }
 
@@ -220,7 +221,7 @@ try {
             transition: all 0.2s;
         }
 
-        .option-item input[type="radio"]:checked + .option-label {
+        .option-item input[type="radio"]:checked+.option-label {
             border-color: #4F46E5;
             background-color: #F5F3FF;
         }
@@ -243,7 +244,7 @@ try {
             flex-shrink: 0;
         }
 
-        .option-item input[type="radio"]:checked + .option-label .option-letter {
+        .option-item input[type="radio"]:checked+.option-label .option-letter {
             background: #4F46E5;
             color: white;
         }
@@ -320,7 +321,7 @@ try {
             background: white;
             border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             text-align: center;
             display: none;
         }
@@ -396,6 +397,7 @@ try {
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard-layout">
         <!-- Sidebar -->
@@ -431,7 +433,8 @@ try {
         <main class="main-content">
             <div class="quiz-container">
                 <div style="margin-bottom: 1.5rem;">
-                    <a href="materials.php?note_id=<?php echo $noteId; ?>" class="btn btn-secondary" style="text-decoration: none;">
+                    <a href="materials.php?note_id=<?php echo $noteId; ?>" class="btn btn-secondary"
+                        style="text-decoration: none;">
                         <i class="fas fa-arrow-left"></i> Back to Materials
                     </a>
                 </div>
@@ -459,12 +462,13 @@ try {
 
                 <form id="quiz-form">
                     <?php foreach ($questions as $index => $question): ?>
-                        <div class="question-card <?php echo $index === 0 ? 'active' : ''; ?>" data-question="<?php echo $index; ?>">
+                        <div class="question-card <?php echo $index === 0 ? 'active' : ''; ?>"
+                            data-question="<?php echo $index; ?>">
                             <div class="question-header">
                                 <div class="question-number"><?php echo $index + 1; ?></div>
                                 <div class="question-type"><?php echo $question['question_type']; ?></div>
                             </div>
-                            
+
                             <div class="question-text">
                                 <?php echo htmlspecialchars($question['question_text']); ?>
                             </div>
@@ -474,13 +478,11 @@ try {
                                 <div class="answer-options">
                                     <?php foreach ($options as $optIndex => $option): ?>
                                         <div class="option-item">
-                                            <input 
-                                                type="radio" 
-                                                name="question_<?php echo $question['question_id']; ?>" 
+                                            <input type="radio" name="question_<?php echo $question['question_id']; ?>"
                                                 value="<?php echo htmlspecialchars($option); ?>"
-                                                id="q<?php echo $question['question_id']; ?>_opt<?php echo $optIndex; ?>"
-                                            >
-                                            <label for="q<?php echo $question['question_id']; ?>_opt<?php echo $optIndex; ?>" class="option-label">
+                                                id="q<?php echo $question['question_id']; ?>_opt<?php echo $optIndex; ?>">
+                                            <label for="q<?php echo $question['question_id']; ?>_opt<?php echo $optIndex; ?>"
+                                                class="option-label">
                                                 <div class="option-letter"><?php echo chr(65 + $optIndex); ?></div>
                                                 <div class="option-text"><?php echo htmlspecialchars($option); ?></div>
                                             </label>
@@ -488,12 +490,8 @@ try {
                                     <?php endforeach; ?>
                                 </div>
                             <?php else: ?>
-                                <textarea 
-                                    name="question_<?php echo $question['question_id']; ?>" 
-                                    class="text-answer" 
-                                    rows="4" 
-                                    placeholder="Type your answer here..."
-                                ></textarea>
+                                <textarea name="question_<?php echo $question['question_id']; ?>" class="text-answer" rows="4"
+                                    placeholder="Type your answer here..."></textarea>
                             <?php endif; ?>
 
                             <div class="navigation-buttons">
@@ -519,7 +517,7 @@ try {
                     <div class="submit-section">
                         <h2><i class="fas fa-clipboard-check"></i> Review Your Answers</h2>
                         <p>Before submitting, make sure you've answered all questions.</p>
-                        
+
                         <div class="answer-summary" id="answer-summary"></div>
 
                         <div class="navigation-buttons" style="justify-content: center;">
@@ -536,22 +534,28 @@ try {
                 </form>
 
                 <!-- Ask for Clarification Section (for current question) -->
-                <div id="clarificationBox" style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 2px solid #FEF3C7;">
-                    <h3 style="margin: 0 0 0.75rem 0; color: #111827; display: flex; align-items: center; gap: 0.5rem; font-size: 1.125rem;">
+                <div id="clarificationBox"
+                    style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 2px solid #FEF3C7;">
+                    <h3
+                        style="margin: 0 0 0.75rem 0; color: #111827; display: flex; align-items: center; gap: 0.5rem; font-size: 1.125rem;">
                         <i class="fas fa-lightbulb" style="color: #F59E0B;"></i>
                         Stuck on This Question?
                     </h3>
-                    <p style="color: #6B7280; margin-bottom: 1rem; font-size: 0.875rem;">Ask AI for help understanding the concept or clarifying the question.</p>
+                    <p style="color: #6B7280; margin-bottom: 1rem; font-size: 0.875rem;">Ask AI for help understanding
+                        the concept or clarifying the question.</p>
                     <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="quizQuestion" placeholder="E.g., Can you explain what this question is asking?" 
-                               style="flex: 1; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 0.95rem;">
-                        <button onclick="askQuizClarification()" id="quizAskBtn" 
-                                style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s;">
+                        <input type="text" id="quizQuestion"
+                            placeholder="E.g., Can you explain what this question is asking?"
+                            style="flex: 1; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 0.95rem;">
+                        <button onclick="askQuizClarification()" id="quizAskBtn"
+                            style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s;">
                             <i class="fas fa-paper-plane"></i> Get Help
                         </button>
                     </div>
-                    <div id="quizResponse" style="margin-top: 1rem; display: none; padding: 1.25rem; background: #FFFBEB; border-radius: 8px; border-left: 4px solid #F59E0B;">
-                        <h4 style="margin: 0 0 0.75rem 0; color: #D97706; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
+                    <div id="quizResponse"
+                        style="margin-top: 1rem; display: none; padding: 1.25rem; background: #FFFBEB; border-radius: 8px; border-left: 4px solid #F59E0B;">
+                        <h4
+                            style="margin: 0 0 0.75rem 0; color: #D97706; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
                             <i class="fas fa-robot"></i>
                             AI Explanation:
                         </h4>
@@ -598,7 +602,7 @@ try {
             document.querySelectorAll('.question-card').forEach(card => {
                 card.classList.remove('active');
             });
-            
+
             document.querySelector(`[data-question="${index}"]`).classList.add('active');
             currentQuestion = index;
             updateProgress();
@@ -609,7 +613,7 @@ try {
             const answered = getAnsweredCount();
             const total = questions.length;
             const percentage = (answered / total) * 100;
-            
+
             document.getElementById('progress-text').textContent = `${answered}/${total}`;
             document.getElementById('progress-fill').style.width = `${percentage}%`;
         }
@@ -626,7 +630,7 @@ try {
         function getAnswer(questionId) {
             const input = document.querySelector(`[name="question_${questionId}"]`);
             if (!input) return null;
-            
+
             if (input.type === 'radio') {
                 const checked = document.querySelector(`[name="question_${questionId}"]:checked`);
                 return checked ? checked.value : null;
@@ -652,18 +656,18 @@ try {
             document.querySelectorAll('.question-card').forEach(card => {
                 card.classList.remove('active');
             });
-            
+
             document.querySelector('.submit-section').classList.add('active');
-            
+
             // Generate summary
             const summaryEl = document.getElementById('answer-summary');
             summaryEl.innerHTML = '';
-            
+
             questions.forEach((q, index) => {
                 const div = document.createElement('div');
                 div.className = 'summary-item';
                 div.textContent = index + 1;
-                
+
                 const answer = getAnswer(q.question_id);
                 if (answer) {
                     div.classList.add('answered');
@@ -672,12 +676,12 @@ try {
                     div.classList.add('unanswered');
                     div.title = 'Not answered';
                 }
-                
+
                 div.addEventListener('click', () => {
                     document.querySelector('.submit-section').classList.remove('active');
                     showQuestion(index);
                 });
-                
+
                 summaryEl.appendChild(div);
             });
         }
@@ -690,22 +694,22 @@ try {
         // Form submission
         document.getElementById('quiz-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const unanswered = questions.length - getAnsweredCount();
             if (unanswered > 0) {
                 if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) {
                     return;
                 }
             }
-            
+
             // Collect answers
             const answers = {};
             questions.forEach(q => {
                 answers[q.question_id] = getAnswer(q.question_id) || '';
             });
-            
+
             const duration = Math.floor((Date.now() - startTime) / 1000);
-            
+
             // Submit to server
             try {
                 const response = await fetch('../api/submit_quiz.php', {
@@ -719,9 +723,9 @@ try {
                         duration: duration
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     window.location.href = `quiz_results.php?attempt_id=${result.attempt_id}`;
                 } else {
@@ -742,27 +746,27 @@ try {
             const askBtn = document.getElementById('quizAskBtn');
             const responseDiv = document.getElementById('quizResponse');
             const contentDiv = document.getElementById('quizContent');
-            
+
             const question = questionInput.value.trim();
-            
+
             if (!question) {
                 alert('Please enter a question');
                 return;
             }
-            
+
             const currentQ = questions[currentQuestion];
             let contextText = `Quiz Question: ${currentQ.question_text}\n`;
             contextText += `Question Type: ${currentQ.question_type}\n`;
             if (currentQ.question_type === 'multiple_choice' && currentQ.options) {
                 contextText += `Options: ${currentQ.options.join(', ')}`;
             }
-            
+
             // Disable button and show loading
             askBtn.disabled = true;
             askBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
             responseDiv.style.display = 'block';
             contentDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI is preparing a detailed explanation...';
-            
+
             try {
                 const response = await fetch('../api/get_clarification.php', {
                     method: 'POST',
@@ -775,17 +779,24 @@ try {
                         context: contextText
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    // Format the explanation
+                    // Format the explanation - properly handle markdown
                     let formatted = result.explanation;
+                    // Remove ### headers and convert to styled divs
+                    formatted = formatted.replace(/###\s+(.*?)(\n|$)/g, '<h4 style="color: #111827; margin: 1.25rem 0 0.75rem 0; font-size: 1.05rem;">$1</h4>');
+                    // Convert **bold** to <strong>
                     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    // Convert *italic* to <em>
                     formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                    formatted = formatted.replace(/### (.*?)(\n|$)/g, '<h4 style="color: #111827; margin: 1rem 0 0.5rem 0;">$1</h4>');
+                    // Convert line breaks
+                    formatted = formatted.replace(/\n\n/g, '</p><p style="margin: 0.75rem 0;">');
                     formatted = formatted.replace(/\n/g, '<br>');
-                    
+                    // Wrap in paragraph
+                    formatted = '<p style="margin: 0;">' + formatted + '</p>';
+
                     contentDiv.innerHTML = formatted;
                 } else {
                     contentDiv.innerHTML = '<span style="color: #DC2626;">Error: ' + (result.message || 'Failed to get clarification') + '</span>';
@@ -797,13 +808,14 @@ try {
                 askBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Get Help';
             }
         }
-        
+
         // Allow Enter key to submit
-        document.getElementById('quizQuestion').addEventListener('keypress', function(e) {
+        document.getElementById('quizQuestion').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 askQuizClarification();
             }
         });
     </script>
 </body>
+
 </html>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.1deb3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Dec 18, 2025 at 01:23 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Host: localhost:3306
+-- Generation Time: Dec 18, 2025 at 06:38 PM
+-- Server version: 8.0.44-0ubuntu0.24.04.2
+-- PHP Version: 8.3.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `study_companion`
+-- Database: `webtech_2025A_gertrude_akagbo`
 --
 
 -- --------------------------------------------------------
@@ -28,14 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `class_discussions` (
-  `discussion_id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
-  `author_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `is_pinned` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `discussion_id` int NOT NULL,
+  `teacher_id` int NOT NULL,
+  `author_id` int NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `content` text COLLATE utf8mb4_general_ci NOT NULL,
+  `is_pinned` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -43,7 +43,8 @@ CREATE TABLE `class_discussions` (
 --
 
 INSERT INTO `class_discussions` (`discussion_id`, `teacher_id`, `author_id`, `title`, `content`, `is_pinned`, `created_at`, `updated_at`) VALUES
-(1, 12, 14, 'q1', 'i don\'t understand the notes', 0, '2025-12-18 11:53:58', '2025-12-18 12:11:00');
+(1, 12, 14, 'q1', 'i don\'t understand the notes', 0, '2025-12-18 11:53:58', '2025-12-18 12:11:00'),
+(2, 17, 17, 'Reading', 'Bead chapter 2 before class tomorrow', 0, '2025-12-18 17:25:26', '2025-12-18 17:25:51');
 
 -- --------------------------------------------------------
 
@@ -52,11 +53,11 @@ INSERT INTO `class_discussions` (`discussion_id`, `teacher_id`, `author_id`, `ti
 --
 
 CREATE TABLE `discussion_replies` (
-  `reply_id` int(11) NOT NULL,
-  `discussion_id` int(11) NOT NULL,
-  `author_id` int(11) NOT NULL,
-  `content` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `reply_id` int NOT NULL,
+  `discussion_id` int NOT NULL,
+  `author_id` int NOT NULL,
+  `content` text COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -64,7 +65,8 @@ CREATE TABLE `discussion_replies` (
 --
 
 INSERT INTO `discussion_replies` (`reply_id`, `discussion_id`, `author_id`, `content`, `created_at`) VALUES
-(1, 1, 12, 'Come for office hours', '2025-12-18 12:11:00');
+(1, 1, 12, 'Come for office hours', '2025-12-18 12:11:00'),
+(2, 2, 16, 'Yes sir', '2025-12-18 17:25:51');
 
 -- --------------------------------------------------------
 
@@ -73,11 +75,11 @@ INSERT INTO `discussion_replies` (`reply_id`, `discussion_id`, `author_id`, `con
 --
 
 CREATE TABLE `flashcards` (
-  `flashcard_id` int(11) NOT NULL,
-  `material_id` int(11) NOT NULL,
-  `question` text NOT NULL,
-  `answer` text NOT NULL,
-  `order_num` int(11) DEFAULT 0
+  `flashcard_id` int NOT NULL,
+  `material_id` int NOT NULL,
+  `question` text COLLATE utf8mb4_general_ci NOT NULL,
+  `answer` text COLLATE utf8mb4_general_ci NOT NULL,
+  `order_num` int DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -144,7 +146,22 @@ INSERT INTO `flashcards` (`flashcard_id`, `material_id`, `question`, `answer`, `
 (551, 110, 'Why do experts emphasize this?', 'Experts emphasize this because it represents essential knowledge that serves as a foundation for professional competence.', 12),
 (552, 110, 'What real-world examples exist?', 'Real-world examples include case studies, industry applications, and practical scenarios that demonstrate the concepts in action.', 13),
 (553, 110, 'How should this be reviewed?', 'Review should be systematic, starting with basics and progressing to complex applications, with regular practice and self-testing.', 14),
-(554, 110, 'What indicates mastery of this topic?', 'Mastery is indicated by ability to explain concepts clearly, apply knowledge to new situations, and recognize connections to other topics. **Note**: This is mock flashcard data generated due to API rate limits.', 15);
+(554, 110, 'What indicates mastery of this topic?', 'Mastery is indicated by ability to explain concepts clearly, apply knowledge to new situations, and recognize connections to other topics. **Note**: This is mock flashcard data generated due to API rate limits.', 15),
+(555, 113, 'What is the main topic covered in this material?', 'This material covers the study material, including its fundamental concepts, key principles, and practical applications. Understanding this topic requires mastering both theoretical and practical aspects.', 1),
+(556, 113, 'Why is this subject important to learn?', 'This subject is important because it provides foundational knowledge that applies to many real-world scenarios. It helps develop critical thinking and problem-solving skills relevant to the field.', 2),
+(557, 113, 'What are the key components discussed?', 'The key components include core definitions, theoretical frameworks, practical examples, and application strategies. Each component builds upon previous knowledge.', 3),
+(558, 113, 'How do the concepts relate to each other?', 'The concepts are interconnected through fundamental principles. Understanding one concept helps clarify others, creating a comprehensive knowledge framework.', 4),
+(559, 113, 'What practical applications exist?', 'Practical applications include real-world problem solving, analytical thinking, and implementation strategies that demonstrate mastery of the concepts.', 5),
+(560, 113, 'What should students focus on first?', 'Students should first focus on understanding the fundamental definitions and core principles, as these form the foundation for more advanced topics.', 6),
+(561, 113, 'How can this knowledge be tested?', 'Knowledge can be tested through concept application, problem-solving exercises, and demonstrating understanding through practical examples.', 7),
+(562, 113, 'What common mistakes should be avoided?', 'Common mistakes include oversimplification, ignoring connections between concepts, and failing to practice application of knowledge.', 8),
+(563, 113, 'What resources help with learning?', 'Helpful resources include textbooks, practice problems, study groups, and hands-on experimentation with the concepts.', 9),
+(564, 113, 'How does this connect to broader topics?', 'This topic connects to broader subject areas through shared principles, common applications, and interdisciplinary relationships.', 10),
+(565, 113, 'What advanced concepts build on this?', 'Advanced concepts include deeper analysis, complex problem solving, and integration with other subject areas.', 11),
+(566, 113, 'Why do experts emphasize this?', 'Experts emphasize this because it represents essential knowledge that serves as a foundation for professional competence.', 12),
+(567, 113, 'What real-world examples exist?', 'Real-world examples include case studies, industry applications, and practical scenarios that demonstrate the concepts in action.', 13),
+(568, 113, 'How should this be reviewed?', 'Review should be systematic, starting with basics and progressing to complex applications, with regular practice and self-testing.', 14),
+(569, 113, 'What indicates mastery of this topic?', 'Mastery is indicated by ability to explain concepts clearly, apply knowledge to new situations, and recognize connections to other topics. **Note**: This is mock flashcard data generated due to API rate limits.', 15);
 
 -- --------------------------------------------------------
 
@@ -153,12 +170,12 @@ INSERT INTO `flashcards` (`flashcard_id`, `material_id`, `question`, `answer`, `
 --
 
 CREATE TABLE `messages` (
-  `message_id` int(11) NOT NULL,
-  `sender_id` int(11) NOT NULL,
-  `receiver_id` int(11) NOT NULL,
-  `message_text` text NOT NULL,
-  `is_read` tinyint(1) DEFAULT 0,
-  `sent_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `message_id` int NOT NULL,
+  `sender_id` int NOT NULL,
+  `receiver_id` int NOT NULL,
+  `message_text` text COLLATE utf8mb4_general_ci NOT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `sent_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -169,7 +186,9 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `receiver_id`, `message_text`
 (1, 14, 12, 'I need help with respiration', 0, '2025-12-18 12:09:10'),
 (2, 12, 14, 'come for office hours', 0, '2025-12-18 12:09:33'),
 (3, 14, 12, 'okay', 0, '2025-12-18 12:09:55'),
-(4, 14, 12, 'Good day Sir', 0, '2025-12-18 12:19:24');
+(4, 14, 12, 'Good day Sir', 0, '2025-12-18 12:19:24'),
+(5, 16, 17, 'Hello Sir', 0, '2025-12-18 17:14:14'),
+(6, 16, 17, 'hi', 0, '2025-12-18 17:14:32');
 
 -- --------------------------------------------------------
 
@@ -178,14 +197,14 @@ INSERT INTO `messages` (`message_id`, `sender_id`, `receiver_id`, `message_text`
 --
 
 CREATE TABLE `notes` (
-  `note_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(200) NOT NULL,
-  `original_filename` varchar(255) NOT NULL,
-  `file_path` varchar(500) NOT NULL,
-  `extracted_text` longtext DEFAULT NULL,
-  `upload_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status` enum('processing','completed','failed') DEFAULT 'processing'
+  `note_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `title` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+  `original_filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `file_path` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `extracted_text` longtext COLLATE utf8mb4_general_ci,
+  `upload_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('processing','completed','failed') COLLATE utf8mb4_general_ci DEFAULT 'processing'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -205,7 +224,8 @@ INSERT INTO `notes` (`note_id`, `user_id`, `title`, `original_filename`, `file_p
 (28, 11, 'bright', 'BRIGHT MINDS report.docx', 'C:\\xampp\\htdocs\\ai-study-companion\\api/../uploads/note_6943d66f5e7fc_1766053487.docx', 'BRIGHT MINDS: INTERACTIVE GAMIFIED LEARNING PLATFORM Sprint Completion Report 1. DESCRIPTION OF FUNCTIONALITY Bright Minds represents a comprehensive web-based educational platform designed specifically for children aged six to twelve years. The application successfully transforms traditional educational approaches into an engaging, interactive experience through gamification principles, vibrant visual interfaces, and age-appropriate content delivery. Throughout this sprint, our team developed and deployed a fully functional minimum viable product encompassing all core features initially planned during project inception. The authentication system serves as the gateway, implementing both registration and login functionality with sophisticated real-time validation. The signup process guides users through username creation (3-20 characters), email validation using regex patterns, password creation with a dynamic strength indicator showing weak/good/excellent ratings through color-coded feedback, password confirmation matching, and avatar selection from three animal companions. The login system provides streamlined access for returning users with username or email authentication and session management through  sessionStorage . Both interfaces feature animated backgrounds with floating clouds and educational symbols, creating an inviting environment that sets the platform\'s playful tone. The main navigation menu functions as the central hub, displaying personalized welcome messages with usernames and selected avatars. Four primary navigation buttons lead to the Games Zone, Quiz Zone, Story Time, and Parent Dashboard, each styled with distinctive gradient colors and interactive  hover  effects. The menu implements session authentication checks that redirect unauthenticated users to login, ensuring proper access control. A logout button with confirmation dialog enables clean session termination. The educational modules comprise three distinct learning experiences. The Games Zone presents random selections from four educational game concepts including Memory Match for pattern recognition, Catch the Star for coordination, Animal Sound Quiz for auditory learning, and Color Splash for quick thinking. The Quiz Zone delivers an interactive multiple-choice system with four educational questions covering science, animals, and general knowledge, providing immediate color-coded feedback (green for correct, red for  incorrect  with correct answer revealed), score tracking, and restart functionality. Story Time offers four original narratives including \"The Brave Little Elephant,\" \"The Rainbow Painter,\" \"Luna and the Talking Moon,\" and \"The Mouse Who Loved Music,\" each containing moral lessons delivered through age-appropriate language and imaginative scenarios. The Parent Dashboard provides monitoring and control capabilities with statistical overviews displaying daily playtime, weekly hours, games played, and quizzes taken. The recent activity feed shows the three most recent interactions with timestamps. Parental controls enable time limit setting and activity type filtering across games, quizzes, stories, or all content. The interface integrates child-specific data dynamically from session storage, personalizing the monitoring experience. The technical implementation utilizes HTML5 for structure, CSS3 for styling and animations, and vanilla JavaScript for interactivity.  The architecture  employs ES6 classes for object-oriented organization, particularly in the authentication system with distinct  SignupForm  and  LoginForm  classes. Session management through  sessionStorage  enables data persistence across pages during browser sessions. Responsive design with CSS media queries ensures functionality across desktop, tablet, and mobile devices. The codebase totals approximately 4,250 lines across 18 files. 2. USER GUIDE New users begin by clicking \"I\'m New Here\" on the welcome screen to access the signup form. They create an explorer name between 3-20 characters, enter a valid email address, create a password of at least 6 characters while watching the strength indicator progress from red (weak) through orange (good) to blue (excellent), confirm their password matches, and select one of three animal avatars. Green checkmarks appear beside valid fields, while red error messages indicate corrections needed. Once all fields show valid with an avatar selected, the blue \"Start Learning\" button activates, creating the account and redirecting to the main menu. Returning users click \"I\'ve Been Here Before\" and enter their username or email with their password. Optional \"Remember me\" functionality exists for personal devices. The login process validates credentials and redirects to the menu within seconds. A \"Forgot Password\" link provides recovery guidance. The main menu welcomes users with their name and avatar, presenting four colorful buttons. The Games Zone button (red-orange gradient) leads to random game descriptions accessible via the \"Start Game\" button, with instructions for Memory Match, Catch the Star, Animal Sound Quiz, and Color Splash. The Quiz Zone button (teal-green gradient) launches multiple-choice questions where users read questions, click answer choices to receive immediate feedback, click \"Next\" to progress, and view final scores with restart options. The Story Time button (purple gradient) displays random stories through the \"New Story\" button, presenting short narratives to read at comfortable paces. The Parent  Dashboard button (orange gradient) accesses monitoring features showing statistics, recent activities, and controls for time limits and activity types. A red logout button safely ends sessions with confirmation. Each educational page includes a back button in the top-left corner returning users to the menu. The quiz maintains disabled buttons after answer selection preventing multiple attempts, while games and stories refresh content with each button click. The interface adapts automatically to different screen sizes, working equally well on computers, tablets, and smartphones. 3. TEAM MEMBER CONTRIBUTIONS Gertrude Akagbo  designed and implemented the complete authentication system encompassing login and signup functionality. Her contributions included creating comprehensive validation functions for username ( 3-20 character  enforcement), email (regex pattern matching), password (strength calculation algorithm evaluating length, case mixing, numbers, and special characters), and password confirmation (matching verification). She developed the password strength indicator with real-time visual feedback through dynamically colored progress bars and text messages. The avatar selection system with visual highlighting represents her attention to engagement beyond functional requirements. Her CSS work created  the  animated background with floating clouds and symbols, form transition effects using cubic- bezier  easing, responsive layouts through media queries, and accessibility features including keyboard navigation and focus indicators. Her contribution totals approximately 450 lines of JavaScript, 650 lines of CSS, and 150 lines of HTML. Joycelyn Allan  developed the three primary educational modules forming the platform\'s core learning experience. She implemented the quiz system with question display, answer selection and validation, color-coded feedback (green/red highlighting), score tracking and calculation, progression controls, and restart functionality. The quiz content includes four carefully curated age-appropriate questions. Her games module features random selection algorithms presenting four game concepts with clear instructions explaining gameplay mechanics and educational objectives. The stories module employs similar random selection delivering four original narratives with moral lessons written specifically for elementary readers. She maintained consistent visual styling across modules using the cream and light blue color scheme while adding module-specific variations. Her work comprises approximately 180 lines of JavaScript, 450 lines of CSS, and 180 lines of HTML. Vanessa Logan  Berinyuy   Anabi  created the navigation infrastructure connecting all platform components and the parent dashboard enabling monitoring and control. Her menu implementation includes session authentication  checking  redirecting unauthenticated users, user data retrieval and parsing from  sessionStorage , dynamic welcome message generation, navigation button handlers for all modules, and logout functionality with confirmation dialogs. She added \"Back to Menu\" buttons to every page, ensuring consistent navigation patterns throughout the platform. The parent dashboard features statistical displays with card-based layouts, dynamic activity feed population integrating child data, and parental controls including time limit inputs and activity type dropdowns. Her styling work created the floating menu animation, gradient button designs differentiated by color psychology, responsive layouts for mobile devices, and professional dashboard aesthetics for adult audiences. She also developed the website flow diagram documenting user journeys. Her contributions total approximately 120 lines of JavaScript, 400 lines of CSS, and 200 lines of HTML. Nana Akua Amponsah  conducted essential research and documentation activities informing all design decisions. Her research covered age-appropriate learning materials for  6-12 year-olds  examining educational standards and developmental psychology, technical resources investigating modern web development practices including CSS animations and form validation patterns, user experience research analyzing successful educational platforms and color psychology, and competitive analysis reviewing Khan Academy Kids,  ABCmouse , Duolingo for Kids, and PBS Kids. Her documentation work produced  the comprehensive  project document describing functionality and testing strategy, technical documentation mapping code structure and architecture, the README file providing project overview and setup instructions, and resource compilation organizing references and sources. While not measured in code lines, her contributions pervade every aspect of the project through the research informing design decisions and documentation supporting future development. All team members participated collaboratively in integration testing, code reviews improving overall quality, design discussions establishing consistent styling, and GitHub repository management maintaining clear version control. This distributed yet coordinated approach enabled efficient parallel development while ensuring cohesive final integration. 4. GITHUB REPOSITORY The Bright Minds codebase resides at https://github.com/JoycelynAllan/Bright-Minds in a well-organized repository structure containing six HTML files (index, menu, games, quiz,  stories,  parentDashboard ), six corresponding CSS files, four JavaScript files (script, games, quiz, stories), and documentation files (README.md, Project_Document_BrightMinds.pdf). This parallel structure where each major component comprises HTML, CSS, and JavaScript files creates predictable patterns enabling efficient navigation. Key commits trace development milestones including initial project setup, authentication system implementation adding 800+ lines, menu navigation with session management adding 320+ lines, quiz module completion with scoring system adding 280+ lines, games module with random selection adding 180+ lines, stories implementation adding 200+ lines, parent dashboard creation adding 350+ lines, navigation integration connecting all pages with back buttons modifying 150+ lines, comprehensive documentation, and final sprint completion with polish and bug fixes. The commit history reveals strategic development ordering where foundational components preceded dependent features, demonstrating thoughtful planning and execution. The repository employs a branching strategy protecting the stable main branch while enabling parallel development through feature branches (feature/authentication, feature/menu-navigation, feature/quiz-module, feature/games-module, feature/stories-module, feature/parent-dashboard, feature/integration, documentation). Pull requests with team reviews governed  merges , establishing quality gates preventing premature integration of incomplete code. This disciplined version control demonstrates professional collaborative practices. Code statistics reveal approximately 1,200 lines of HTML, 2,100 lines of CSS, and 950 lines of JavaScript totaling roughly 4,250 lines across 18 files. This distribution reflects careful modular organization preventing unwieldy file growth while maintaining clear separation of concerns. 5. TESTING STRATEGY The testing approach balanced thoroughness against limited resources through systematic manual testing supplemented by user acceptance testing with actual target audience members. This pragmatic strategy prioritized user-facing functionality verification over automated testing infrastructure construction, allowing focus on feature implementation while ensuring reliability. Manual testing procedures systematically verified authentication validation rules, confirming correct acceptance of valid inputs and rejection of invalid entries across usernames, emails, passwords, and password confirmations. Testers examined boundary conditions, tested edge cases, and verified real-time feedback mechanisms. Navigation  testing confirmed all buttons and links functioned correctly, directing users to appropriate destinations without broken paths. Quiz testing validated color-coded feedback systems, score tracking accuracy, progression mechanics, and restart functionality through multiple complete quiz attempts. Games and stories testing verified random selection functionality ensuring all content eventually appeared through repeated interactions. Cross-device testing validated functionality across Windows PC, MacBook, iPad, and various smartphones using Chrome, Firefox, Safari, and Edge browsers. Responsive design testing examined layouts at different viewport widths confirming appropriate adaptation to screen sizes from 320px minimum mobile through tablet ranges to desktop resolutions above 1200px. Performance testing measured page load times under one second for all pages and verified smooth 60fps animation rendering. Accessibility testing confirmed keyboard navigation functionality enabling complete platform access without mouse input, visible focus indicators on all interactive elements, color contrast meeting WCAG 2.1 AA standards for text readability, and proper form label associations supporting screen reader announcements. While achieving reasonable accessibility, testing identified opportunities for improvement including ARIA attributes,  skip  navigation links, and animation disable options. User acceptance testing involved five children (ages 6-12), three parents, and two educators providing invaluable real-world feedback. Children successfully navigated  signup  independently, enjoyed quiz immediate feedback and colorful responses, appreciated story narratives particularly younger children, and expressed enthusiasm for game concepts requesting actual playable implementations. Parents  valued  dashboard statistics and activity feeds while requesting more detailed tracking including time spent per activity and quiz scores. Educators confirmed age-appropriate content and difficulty levels while suggesting comprehension questions for stories and answer explanations for quizzes to enhance educational value. Testing revealed 78 total test cases with 74 passing (95%), zero failed tests, and four documented known issues. Critical bugs including quiz scoring and login redirection were identified and resolved during testing. Known non-blocking issues include session data loss on browser close (expected  sessionStorage  behavior) and parent dashboard static data (requires backend implementation). The decision to defer automated unit testing to future phases represents conscious trade-off acknowledging sprint constraints while documenting this as  high-priority  for next sprint. 6. RETROSPECTIVE What Went Well:  Team collaboration proved remarkably effective with daily stand-ups maintaining alignment, clear role definitions preventing overlap, and regular integration sessions ensuring cohesive merging. The modular architecture enabled efficient parallel development with minimal merge conflicts. Technical implementation exceeded minimum viable product standards through attention to visual details, sophisticated validation logic, and responsive design demonstrating pride in craftsmanship. User-centered design consistently prioritized target audience needs over technical convenience. Documentation maintained concurrently with development preserved design decision context and created valuable reference materials. What Did Not Go Well:  Limited backend integration constrains functionality through  sessionStorage  preventing persistent data storage across browser sessions or multiple devices, affecting user experience and parent dashboard real activity tracking. The absence of automated testing creates technical debt that will compound as features expand, making regression testing increasingly impractical. Time estimation proved optimistic for certain tasks particularly authentication system complexity and cross-device testing, revealing need for improved estimation practices. Initial setup consumed more sprint time than anticipated, suggesting benefit from better sprint zero preparation. Integration concentrated at sprint end revealed compatibility issues that more frequent mid-sprint integration would surface earlier. Action Items for Next Sprint:  Implement backend infrastructure as highest priority including Node.js/Express server, MongoDB database, and RESTful API endpoints enabling persistent storage and real activity tracking (15-20 hours estimated). Integrate Jest testing framework and write unit tests for critical functions achieving 80% code coverage target (10 hours initial setup plus 2 hours per feature ongoing). Enhance parent dashboard with real-time activity tracking and detailed analytics (8-10 hours). Expand content library adding 10+ quiz questions, 5+ games, 5+ stories providing greater variety (12 hours). Implement progress tracking with badges, achievements, and progress bars increasing engagement (15 hours). Establish testing standards requiring tests for all new features and enforce commit message conventions with mandatory pull request reviews. Schedule weekly mid-sprint integration meetings  detecting  compatibility issues earlier. Update documentation with each feature commit rather than end-of-sprint batch updates. Lessons Learned:  Modular architecture proves essential for parallel development. Session management requires upfront planning before implementation begins. CSS animations significantly enhance user experience when applied thoughtfully. Responsive design should follow mobile-first approach from project start. Real-time validation prevents user frustration through immediate feedback. Daily communication prevents blockers and  maintains team alignment. Clear ownership improves individual accountability and efficiency. Regular integration beats end-of-sprint integration rushes. Testing deserves explicit time allocation rather than treating as afterthought. User testing reveals assumptions invisible during development. Documentation alongside development beats retrospective documentation attempts. The sprint successfully delivered a fully functional MVP with all planned features implemented, tested, and documented. The team demonstrated excellent collaboration, technical skills, and commitment to quality. Zero critical bugs reached production. Positive feedback from all user testing groups validates core design decisions while identifying specific enhancements for future development. The foundation established positions the project excellently for continued enhancement in subsequent sprints.', '2025-12-18 10:24:47', 'completed');
 INSERT INTO `notes` (`note_id`, `user_id`, `title`, `original_filename`, `file_path`, `extracted_text`, `upload_date`, `status`) VALUES
 (29, 13, 'french', 'french_revolution.txt', 'C:\\xampp\\htdocs\\ai-study-companion\\api/../uploads/note_6943e31fe9d0b_1766056735.txt', 'THE FRENCH REVOLUTION: CAUSES, EVENTS, AND CONSEQUENCES (1789-1799)\n\nIntroduction\n\nThe French Revolution was one of the most significant events in world history, fundamentally transforming France and influencing political thought and revolutionary movements worldwide. Beginning in 1789 and lasting approximately ten years, the Revolution overthrew the absolute monarchy, established a republic, experienced violent periods of political turmoil, and ultimately paved the way for Napoleon Bonaparte\'s rise to power. The Revolution\'s ideals of liberty, equality, and fraternity continue to resonate in democratic movements around the globe.\n\nBackground and Causes of the Revolution\n\nSOCIAL STRUCTURE: THE ANCIEN RÉGIME\n\nPre-revolutionary French society was divided into three estates:\n\nFirst Estate - The Clergy:\n- Comprised approximately 0.5% of the population (about 130,000 people)\n- Owned about 10% of all land\n- Exempt from most taxes\n- Collected tithes from the general population\n- Had significant political influence\n\nSecond Estate - The Nobility:\n- Comprised approximately 1.5% of the population (about 400,000 people)\n- Owned about 25% of all land\n- Largely exempt from taxes\n- Held most high positions in government, military, and church\n- Enjoyed numerous privileges and legal advantages\n\nThird Estate - Everyone Else:\n- Comprised approximately 98% of the population (about 27 million people)\n- Included peasants, urban workers, and the bourgeoisie (middle class)\n- Bore nearly all the tax burden\n- Had little political power despite their numbers\n- The bourgeoisie were educated and wealthy but lacked social status and political influence\n\nECONOMIC CAUSES\n\nFrance faced a severe financial crisis in the 1780s:\n\nRoyal Debt:\n- France had accumulated enormous debt from wars, including support for the American Revolution\n- King Louis XVI\'s extravagant court at Versailles cost immense amounts\n- Poor financial management and corruption in tax collection\n- The government spent more than it collected in revenue\n\nTaxation System:\n- The tax burden fell almost entirely on the Third Estate\n- The clergy and nobility were largely exempt from taxation\n- Indirect taxes (like the gabelle on salt) hit the poorest hardest\n- Tax farming system was corrupt and inefficient\n\nEconomic Hardship:\n- Bad harvests in 1788 led to bread shortages\n- Bread prices soared, consuming up to 80% of workers\' wages\n- Unemployment rose in urban areas\n- Manufacturing and trade were in decline\n\nPOLITICAL CAUSES\n\nThe Enlightenment:\n- Ideas from philosophers like Voltaire, Rousseau, and Montesquieu spread widely\n- Concepts of natural rights, social contract, and popular sovereignty challenged absolute monarchy\n- The success of the American Revolution inspired French reformers\n- Growing literacy and publication of pamphlets spread revolutionary ideas\n\nWeak Leadership:\n- Louis XVI was indecisive and lacked political skill\n- Queen Marie Antoinette was unpopular and seen as out of touch\n- The king\'s attempts at reform were blocked by privileged estates\n- Loss of confidence in the monarchy\'s ability to solve problems\n\nMajor Events of the Revolution\n\nPHASE 1: THE MODERATE BEGINNING (1789-1792)\n\nThe Estates-General (May 1789):\n- Louis XVI called the Estates-General for the first time since 1614\n- Sought to raise taxes to address financial crisis\n- Voting method became a major issue: by order (favoring First and Second Estates) vs. by head (favoring Third Estate)\n\nThe National Assembly (June 1789):\n- Third Estate delegates declared themselves the National Assembly\n- Invited other estates to join them\n- Took the Tennis Court Oath, vowing not to disband until France had a constitution\n- Marked the beginning of representative government\n\nThe Storming of the Bastille (July 14, 1789):\n- A Parisian mob stormed the Bastille fortress-prison\n- Seeking weapons and gunpowder\n- Killed the governor and several guards\n- Symbolized the people\'s defiance of royal authority\n- Sparked revolts across France; July 14 is now France\'s national holiday\n\nThe Great Fear (July-August 1789):\n- Peasant revolts spread across the countryside\n- Peasants attacked nobles\' estates and burned feudal documents\n- Driven by rumors of aristocratic conspiracy\n\nAugust Decrees (August 4, 1789):\n- National Assembly abolished feudalism\n- Eliminated noble privileges, tithes, and seigneurial rights\n- Proclaimed equal taxation for all\n\nDeclaration of the Rights of Man and Citizen (August 26, 1789):\n- Proclaimed natural rights: liberty, property, security, and resistance to oppression\n- Declared equality before the law\n- Established principles of popular sovereignty and due process\n- Influenced by American Declaration of Independence and Enlightenment thought\n\nWomen\'s March on Versailles (October 1789):\n- Thousands of women marched from Paris to Versailles\n- Demanded bread and the king\'s attention to food shortages\n- Forced the royal family to move from Versailles to Paris\n- Demonstrated popular power and the king\'s vulnerability\n\nCivil Constitution of the Clergy (1790):\n- Made the Catholic Church subordinate to the state\n- Required clergy to swear an oath of loyalty to the state\n- Created deep divisions between revolutionaries and the Church\n- Many clergy refused the oath, creating \"refractory\" priests\n\nConstitution of 1791:\n- Established a constitutional monarchy\n- Created a Legislative Assembly elected by active citizens (property-owning men)\n- Limited royal power with suspensive veto\n- Preserved social distinctions despite rhetoric of equality\n\nPHASE 2: THE RADICAL REVOLUTION (1792-1794)\n\nWar and External Threats (1792):\n- France declared war on Austria (April 1792)\n- Revolutionary government feared foreign intervention to restore absolute monarchy\n- Prussia joined Austria; other European powers watched nervously\n- French armies initially suffered defeats\n\nSeptember Massacres (1792):\n- Mobs killed over 1,000 prisoners in Paris\n- Victims included clergy, nobles, and common criminals\n- Motivated by fear of counter-revolutionary plots and external invasion\n\nAbolition of Monarchy (September 1792):\n- National Convention abolished the monarchy\n- Proclaimed France a republic\n- Symbolized the radical turn of the Revolution\n\nTrial and Execution of Louis XVI (January 1793):\n- Louis XVI was tried for treason and conspiracy with foreign enemies\n- Found guilty by the Convention\n- Executed by guillotine on January 21, 1793\n- Shocked Europe and intensified foreign opposition to the Revolution\n\nThe Reign of Terror (1793-1794):\n- Committee of Public Safety, led by Maximilien Robespierre, took control\n- Instituted emergency measures to defend the Revolution\n- Established Revolutionary Tribunal to try \"enemies of the revolution\"\n- Approximately 16,000-40,000 people were executed (estimates vary)\n- Victims included Marie Antoinette, Girondin deputies, and eventually Danton\n\nKey Features of the Terror:\n- Law of Suspects allowed arrest without evidence\n- Revolutionary calendar replaced Christian calendar\n- Dechristianization campaign attacked Catholic Church\n- Price controls (Law of the Maximum) on food and goods\n- Mass conscription (levée en masse) created large revolutionary army\n- Republic of Virtue promoted revolutionary ideals\n\nThe Thermidorian Reaction (July 1794):\n- Robespierre and allies were arrested and executed\n- Named after the month of Thermidor in the revolutionary calendar\n- Marked the end of the Reign of Terror\n- More moderate policies were gradually adopted\n\nPHASE 3: THE DIRECTORY (1795-1799)\n\nConstitution of Year III (1795):\n- Established a five-member Directory as executive\n- Created a bicameral legislature\n- Restored property qualifications for voting\n- Attempted to create stability and prevent dictatorship\n\nChallenges Facing the Directory:\n- Threats from royalists wanting to restore monarchy\n- Threats from radical Jacobins wanting more revolutionary change\n- Ongoing wars with European coalitions\n- Economic instability and inflation\n- Corruption and political weakness\n\nRise of Napoleon Bonaparte:\n- Successful military general who gained popularity through victories in Italy\n- Seen as a stabilizing figure amid political chaos\n- Returned from Egypt in 1799\n\nCoup of 18 Brumaire (November 9, 1799):\n- Napoleon overthrew the Directory with military support\n- Established the Consulate with Napoleon as First Consul\n- Effectively ended the Revolution\n- Marked the beginning of Napoleon\'s path to emperor\n\nConsequences and Legacy\n\nIMMEDIATE CONSEQUENCES IN FRANCE\n\nPolitical Changes:\n- End of absolute monarchy and feudalism\n- Establishment of principles of popular sovereignty and representative government\n- Creation of modern bureaucratic state\n- Centralization of administrative power\n- Legal equality before the law\n\nSocial Changes:\n- Abolition of privileges based on birth\n- Redistribution of land from Church and nobility\n- Growth of bourgeois power and influence\n- Changes in family law, including easier divorce\n- Metric system introduced\n\nNapoleonic Code (1804):\n- Codified revolutionary legal reforms\n- Established equality before the law, property rights, and secular marriage\n- Preserved many revolutionary achievements\n- Served as model for legal systems worldwide\n\nIMPACT ON EUROPE AND THE WORLD\n\nSpread of Revolutionary Ideas:\n- Concepts of nationalism, popular sovereignty, and human rights spread across Europe\n- Inspired independence movements in Latin America\n- Influenced democratic and reform movements throughout the 19th century\n\nNapoleonic Wars (1803-1815):\n- France\'s revolutionary armies spread revolutionary ideas\n- Redrew European map and destroyed Holy Roman Empire\n- Stimulated nationalist reactions in occupied territories\n- Led to Congress of Vienna and attempt to restore old order\n\nLong-term Political Legacy:\n- Demonstrated possibility of overthrowing traditional political order\n- Inspired revolutions in 1830 and 1848\n- Contributed to gradual democratization of European states\n- Established modern concepts of left and right in politics\n\nHISTORIOGRAPHICAL DEBATES\n\nHistorians continue to debate various aspects of the French Revolution:\n\nWas the Terror Necessary?\n- Some argue it was needed to save the Revolution from internal and external enemies\n- Others view it as an unnecessary descent into violence that betrayed revolutionary ideals\n\nRole of the Sans-Culottes:\n- Debate over whether the Revolution was driven from below by popular classes\n- Or directed from above by bourgeois politicians\n\nEconomic vs. Political Causes:\n- Marxist historians emphasized class conflict and economic factors\n- Revisionist historians stress political culture and ideology\n- Current scholarship often combines multiple approaches\n\nWas it a Bourgeois Revolution?\n- Traditional view: Revolution transferred power from nobility to bourgeoisie\n- Revisionist critique: Bourgeoisie and nobility often had similar interests\n- Modern synthesis: Revolution had multiple causes and beneficiaries\n\nConclusion\n\nThe French Revolution was a complex, multifaceted event that transformed not only France but also influenced the entire world. From its origins in financial crisis and social inequality to its radical phase of terror and violence, to its eventual stabilization under Napoleon, the Revolution demonstrated both the power of ideas and the dangers of political extremism.\n\nThe Revolution\'s legacy includes the spread of Enlightenment ideals, the rise of nationalism, the end of feudalism in Europe, and the ongoing struggle between various forms of government and political philosophies. Its principles of liberty, equality, and fraternity, though imperfectly realized during the Revolution itself, continue to inspire democratic movements worldwide.\n\nKey Points to Remember:\n- The Revolution had multiple causes: social inequality, financial crisis, Enlightenment ideas, and weak leadership\n- The Revolution progressed through distinct phases: moderate, radical, and conservative\n- The Reign of Terror remains one of the most controversial periods\n- The Revolution had profound impacts on France, Europe, and the world\n- Its ideas about democracy, rights, and citizenship continue to influence political thought today', '2025-12-18 11:18:55', 'completed'),
-(31, 14, 'french', 'french_revolution.txt', 'C:\\xampp\\htdocs\\ai-study-companion\\api/../uploads/note_6943e685a59e4_1766057605.txt', 'THE FRENCH REVOLUTION: CAUSES, EVENTS, AND CONSEQUENCES (1789-1799)\n\nIntroduction\n\nThe French Revolution was one of the most significant events in world history, fundamentally transforming France and influencing political thought and revolutionary movements worldwide. Beginning in 1789 and lasting approximately ten years, the Revolution overthrew the absolute monarchy, established a republic, experienced violent periods of political turmoil, and ultimately paved the way for Napoleon Bonaparte\'s rise to power. The Revolution\'s ideals of liberty, equality, and fraternity continue to resonate in democratic movements around the globe.\n\nBackground and Causes of the Revolution\n\nSOCIAL STRUCTURE: THE ANCIEN RÉGIME\n\nPre-revolutionary French society was divided into three estates:\n\nFirst Estate - The Clergy:\n- Comprised approximately 0.5% of the population (about 130,000 people)\n- Owned about 10% of all land\n- Exempt from most taxes\n- Collected tithes from the general population\n- Had significant political influence\n\nSecond Estate - The Nobility:\n- Comprised approximately 1.5% of the population (about 400,000 people)\n- Owned about 25% of all land\n- Largely exempt from taxes\n- Held most high positions in government, military, and church\n- Enjoyed numerous privileges and legal advantages\n\nThird Estate - Everyone Else:\n- Comprised approximately 98% of the population (about 27 million people)\n- Included peasants, urban workers, and the bourgeoisie (middle class)\n- Bore nearly all the tax burden\n- Had little political power despite their numbers\n- The bourgeoisie were educated and wealthy but lacked social status and political influence\n\nECONOMIC CAUSES\n\nFrance faced a severe financial crisis in the 1780s:\n\nRoyal Debt:\n- France had accumulated enormous debt from wars, including support for the American Revolution\n- King Louis XVI\'s extravagant court at Versailles cost immense amounts\n- Poor financial management and corruption in tax collection\n- The government spent more than it collected in revenue\n\nTaxation System:\n- The tax burden fell almost entirely on the Third Estate\n- The clergy and nobility were largely exempt from taxation\n- Indirect taxes (like the gabelle on salt) hit the poorest hardest\n- Tax farming system was corrupt and inefficient\n\nEconomic Hardship:\n- Bad harvests in 1788 led to bread shortages\n- Bread prices soared, consuming up to 80% of workers\' wages\n- Unemployment rose in urban areas\n- Manufacturing and trade were in decline\n\nPOLITICAL CAUSES\n\nThe Enlightenment:\n- Ideas from philosophers like Voltaire, Rousseau, and Montesquieu spread widely\n- Concepts of natural rights, social contract, and popular sovereignty challenged absolute monarchy\n- The success of the American Revolution inspired French reformers\n- Growing literacy and publication of pamphlets spread revolutionary ideas\n\nWeak Leadership:\n- Louis XVI was indecisive and lacked political skill\n- Queen Marie Antoinette was unpopular and seen as out of touch\n- The king\'s attempts at reform were blocked by privileged estates\n- Loss of confidence in the monarchy\'s ability to solve problems\n\nMajor Events of the Revolution\n\nPHASE 1: THE MODERATE BEGINNING (1789-1792)\n\nThe Estates-General (May 1789):\n- Louis XVI called the Estates-General for the first time since 1614\n- Sought to raise taxes to address financial crisis\n- Voting method became a major issue: by order (favoring First and Second Estates) vs. by head (favoring Third Estate)\n\nThe National Assembly (June 1789):\n- Third Estate delegates declared themselves the National Assembly\n- Invited other estates to join them\n- Took the Tennis Court Oath, vowing not to disband until France had a constitution\n- Marked the beginning of representative government\n\nThe Storming of the Bastille (July 14, 1789):\n- A Parisian mob stormed the Bastille fortress-prison\n- Seeking weapons and gunpowder\n- Killed the governor and several guards\n- Symbolized the people\'s defiance of royal authority\n- Sparked revolts across France; July 14 is now France\'s national holiday\n\nThe Great Fear (July-August 1789):\n- Peasant revolts spread across the countryside\n- Peasants attacked nobles\' estates and burned feudal documents\n- Driven by rumors of aristocratic conspiracy\n\nAugust Decrees (August 4, 1789):\n- National Assembly abolished feudalism\n- Eliminated noble privileges, tithes, and seigneurial rights\n- Proclaimed equal taxation for all\n\nDeclaration of the Rights of Man and Citizen (August 26, 1789):\n- Proclaimed natural rights: liberty, property, security, and resistance to oppression\n- Declared equality before the law\n- Established principles of popular sovereignty and due process\n- Influenced by American Declaration of Independence and Enlightenment thought\n\nWomen\'s March on Versailles (October 1789):\n- Thousands of women marched from Paris to Versailles\n- Demanded bread and the king\'s attention to food shortages\n- Forced the royal family to move from Versailles to Paris\n- Demonstrated popular power and the king\'s vulnerability\n\nCivil Constitution of the Clergy (1790):\n- Made the Catholic Church subordinate to the state\n- Required clergy to swear an oath of loyalty to the state\n- Created deep divisions between revolutionaries and the Church\n- Many clergy refused the oath, creating \"refractory\" priests\n\nConstitution of 1791:\n- Established a constitutional monarchy\n- Created a Legislative Assembly elected by active citizens (property-owning men)\n- Limited royal power with suspensive veto\n- Preserved social distinctions despite rhetoric of equality\n\nPHASE 2: THE RADICAL REVOLUTION (1792-1794)\n\nWar and External Threats (1792):\n- France declared war on Austria (April 1792)\n- Revolutionary government feared foreign intervention to restore absolute monarchy\n- Prussia joined Austria; other European powers watched nervously\n- French armies initially suffered defeats\n\nSeptember Massacres (1792):\n- Mobs killed over 1,000 prisoners in Paris\n- Victims included clergy, nobles, and common criminals\n- Motivated by fear of counter-revolutionary plots and external invasion\n\nAbolition of Monarchy (September 1792):\n- National Convention abolished the monarchy\n- Proclaimed France a republic\n- Symbolized the radical turn of the Revolution\n\nTrial and Execution of Louis XVI (January 1793):\n- Louis XVI was tried for treason and conspiracy with foreign enemies\n- Found guilty by the Convention\n- Executed by guillotine on January 21, 1793\n- Shocked Europe and intensified foreign opposition to the Revolution\n\nThe Reign of Terror (1793-1794):\n- Committee of Public Safety, led by Maximilien Robespierre, took control\n- Instituted emergency measures to defend the Revolution\n- Established Revolutionary Tribunal to try \"enemies of the revolution\"\n- Approximately 16,000-40,000 people were executed (estimates vary)\n- Victims included Marie Antoinette, Girondin deputies, and eventually Danton\n\nKey Features of the Terror:\n- Law of Suspects allowed arrest without evidence\n- Revolutionary calendar replaced Christian calendar\n- Dechristianization campaign attacked Catholic Church\n- Price controls (Law of the Maximum) on food and goods\n- Mass conscription (levée en masse) created large revolutionary army\n- Republic of Virtue promoted revolutionary ideals\n\nThe Thermidorian Reaction (July 1794):\n- Robespierre and allies were arrested and executed\n- Named after the month of Thermidor in the revolutionary calendar\n- Marked the end of the Reign of Terror\n- More moderate policies were gradually adopted\n\nPHASE 3: THE DIRECTORY (1795-1799)\n\nConstitution of Year III (1795):\n- Established a five-member Directory as executive\n- Created a bicameral legislature\n- Restored property qualifications for voting\n- Attempted to create stability and prevent dictatorship\n\nChallenges Facing the Directory:\n- Threats from royalists wanting to restore monarchy\n- Threats from radical Jacobins wanting more revolutionary change\n- Ongoing wars with European coalitions\n- Economic instability and inflation\n- Corruption and political weakness\n\nRise of Napoleon Bonaparte:\n- Successful military general who gained popularity through victories in Italy\n- Seen as a stabilizing figure amid political chaos\n- Returned from Egypt in 1799\n\nCoup of 18 Brumaire (November 9, 1799):\n- Napoleon overthrew the Directory with military support\n- Established the Consulate with Napoleon as First Consul\n- Effectively ended the Revolution\n- Marked the beginning of Napoleon\'s path to emperor\n\nConsequences and Legacy\n\nIMMEDIATE CONSEQUENCES IN FRANCE\n\nPolitical Changes:\n- End of absolute monarchy and feudalism\n- Establishment of principles of popular sovereignty and representative government\n- Creation of modern bureaucratic state\n- Centralization of administrative power\n- Legal equality before the law\n\nSocial Changes:\n- Abolition of privileges based on birth\n- Redistribution of land from Church and nobility\n- Growth of bourgeois power and influence\n- Changes in family law, including easier divorce\n- Metric system introduced\n\nNapoleonic Code (1804):\n- Codified revolutionary legal reforms\n- Established equality before the law, property rights, and secular marriage\n- Preserved many revolutionary achievements\n- Served as model for legal systems worldwide\n\nIMPACT ON EUROPE AND THE WORLD\n\nSpread of Revolutionary Ideas:\n- Concepts of nationalism, popular sovereignty, and human rights spread across Europe\n- Inspired independence movements in Latin America\n- Influenced democratic and reform movements throughout the 19th century\n\nNapoleonic Wars (1803-1815):\n- France\'s revolutionary armies spread revolutionary ideas\n- Redrew European map and destroyed Holy Roman Empire\n- Stimulated nationalist reactions in occupied territories\n- Led to Congress of Vienna and attempt to restore old order\n\nLong-term Political Legacy:\n- Demonstrated possibility of overthrowing traditional political order\n- Inspired revolutions in 1830 and 1848\n- Contributed to gradual democratization of European states\n- Established modern concepts of left and right in politics\n\nHISTORIOGRAPHICAL DEBATES\n\nHistorians continue to debate various aspects of the French Revolution:\n\nWas the Terror Necessary?\n- Some argue it was needed to save the Revolution from internal and external enemies\n- Others view it as an unnecessary descent into violence that betrayed revolutionary ideals\n\nRole of the Sans-Culottes:\n- Debate over whether the Revolution was driven from below by popular classes\n- Or directed from above by bourgeois politicians\n\nEconomic vs. Political Causes:\n- Marxist historians emphasized class conflict and economic factors\n- Revisionist historians stress political culture and ideology\n- Current scholarship often combines multiple approaches\n\nWas it a Bourgeois Revolution?\n- Traditional view: Revolution transferred power from nobility to bourgeoisie\n- Revisionist critique: Bourgeoisie and nobility often had similar interests\n- Modern synthesis: Revolution had multiple causes and beneficiaries\n\nConclusion\n\nThe French Revolution was a complex, multifaceted event that transformed not only France but also influenced the entire world. From its origins in financial crisis and social inequality to its radical phase of terror and violence, to its eventual stabilization under Napoleon, the Revolution demonstrated both the power of ideas and the dangers of political extremism.\n\nThe Revolution\'s legacy includes the spread of Enlightenment ideals, the rise of nationalism, the end of feudalism in Europe, and the ongoing struggle between various forms of government and political philosophies. Its principles of liberty, equality, and fraternity, though imperfectly realized during the Revolution itself, continue to inspire democratic movements worldwide.\n\nKey Points to Remember:\n- The Revolution had multiple causes: social inequality, financial crisis, Enlightenment ideas, and weak leadership\n- The Revolution progressed through distinct phases: moderate, radical, and conservative\n- The Reign of Terror remains one of the most controversial periods\n- The Revolution had profound impacts on France, Europe, and the world\n- Its ideas about democracy, rights, and citizenship continue to influence political thought today', '2025-12-18 11:33:25', 'completed');
+(31, 14, 'french', 'french_revolution.txt', 'C:\\xampp\\htdocs\\ai-study-companion\\api/../uploads/note_6943e685a59e4_1766057605.txt', 'THE FRENCH REVOLUTION: CAUSES, EVENTS, AND CONSEQUENCES (1789-1799)\n\nIntroduction\n\nThe French Revolution was one of the most significant events in world history, fundamentally transforming France and influencing political thought and revolutionary movements worldwide. Beginning in 1789 and lasting approximately ten years, the Revolution overthrew the absolute monarchy, established a republic, experienced violent periods of political turmoil, and ultimately paved the way for Napoleon Bonaparte\'s rise to power. The Revolution\'s ideals of liberty, equality, and fraternity continue to resonate in democratic movements around the globe.\n\nBackground and Causes of the Revolution\n\nSOCIAL STRUCTURE: THE ANCIEN RÉGIME\n\nPre-revolutionary French society was divided into three estates:\n\nFirst Estate - The Clergy:\n- Comprised approximately 0.5% of the population (about 130,000 people)\n- Owned about 10% of all land\n- Exempt from most taxes\n- Collected tithes from the general population\n- Had significant political influence\n\nSecond Estate - The Nobility:\n- Comprised approximately 1.5% of the population (about 400,000 people)\n- Owned about 25% of all land\n- Largely exempt from taxes\n- Held most high positions in government, military, and church\n- Enjoyed numerous privileges and legal advantages\n\nThird Estate - Everyone Else:\n- Comprised approximately 98% of the population (about 27 million people)\n- Included peasants, urban workers, and the bourgeoisie (middle class)\n- Bore nearly all the tax burden\n- Had little political power despite their numbers\n- The bourgeoisie were educated and wealthy but lacked social status and political influence\n\nECONOMIC CAUSES\n\nFrance faced a severe financial crisis in the 1780s:\n\nRoyal Debt:\n- France had accumulated enormous debt from wars, including support for the American Revolution\n- King Louis XVI\'s extravagant court at Versailles cost immense amounts\n- Poor financial management and corruption in tax collection\n- The government spent more than it collected in revenue\n\nTaxation System:\n- The tax burden fell almost entirely on the Third Estate\n- The clergy and nobility were largely exempt from taxation\n- Indirect taxes (like the gabelle on salt) hit the poorest hardest\n- Tax farming system was corrupt and inefficient\n\nEconomic Hardship:\n- Bad harvests in 1788 led to bread shortages\n- Bread prices soared, consuming up to 80% of workers\' wages\n- Unemployment rose in urban areas\n- Manufacturing and trade were in decline\n\nPOLITICAL CAUSES\n\nThe Enlightenment:\n- Ideas from philosophers like Voltaire, Rousseau, and Montesquieu spread widely\n- Concepts of natural rights, social contract, and popular sovereignty challenged absolute monarchy\n- The success of the American Revolution inspired French reformers\n- Growing literacy and publication of pamphlets spread revolutionary ideas\n\nWeak Leadership:\n- Louis XVI was indecisive and lacked political skill\n- Queen Marie Antoinette was unpopular and seen as out of touch\n- The king\'s attempts at reform were blocked by privileged estates\n- Loss of confidence in the monarchy\'s ability to solve problems\n\nMajor Events of the Revolution\n\nPHASE 1: THE MODERATE BEGINNING (1789-1792)\n\nThe Estates-General (May 1789):\n- Louis XVI called the Estates-General for the first time since 1614\n- Sought to raise taxes to address financial crisis\n- Voting method became a major issue: by order (favoring First and Second Estates) vs. by head (favoring Third Estate)\n\nThe National Assembly (June 1789):\n- Third Estate delegates declared themselves the National Assembly\n- Invited other estates to join them\n- Took the Tennis Court Oath, vowing not to disband until France had a constitution\n- Marked the beginning of representative government\n\nThe Storming of the Bastille (July 14, 1789):\n- A Parisian mob stormed the Bastille fortress-prison\n- Seeking weapons and gunpowder\n- Killed the governor and several guards\n- Symbolized the people\'s defiance of royal authority\n- Sparked revolts across France; July 14 is now France\'s national holiday\n\nThe Great Fear (July-August 1789):\n- Peasant revolts spread across the countryside\n- Peasants attacked nobles\' estates and burned feudal documents\n- Driven by rumors of aristocratic conspiracy\n\nAugust Decrees (August 4, 1789):\n- National Assembly abolished feudalism\n- Eliminated noble privileges, tithes, and seigneurial rights\n- Proclaimed equal taxation for all\n\nDeclaration of the Rights of Man and Citizen (August 26, 1789):\n- Proclaimed natural rights: liberty, property, security, and resistance to oppression\n- Declared equality before the law\n- Established principles of popular sovereignty and due process\n- Influenced by American Declaration of Independence and Enlightenment thought\n\nWomen\'s March on Versailles (October 1789):\n- Thousands of women marched from Paris to Versailles\n- Demanded bread and the king\'s attention to food shortages\n- Forced the royal family to move from Versailles to Paris\n- Demonstrated popular power and the king\'s vulnerability\n\nCivil Constitution of the Clergy (1790):\n- Made the Catholic Church subordinate to the state\n- Required clergy to swear an oath of loyalty to the state\n- Created deep divisions between revolutionaries and the Church\n- Many clergy refused the oath, creating \"refractory\" priests\n\nConstitution of 1791:\n- Established a constitutional monarchy\n- Created a Legislative Assembly elected by active citizens (property-owning men)\n- Limited royal power with suspensive veto\n- Preserved social distinctions despite rhetoric of equality\n\nPHASE 2: THE RADICAL REVOLUTION (1792-1794)\n\nWar and External Threats (1792):\n- France declared war on Austria (April 1792)\n- Revolutionary government feared foreign intervention to restore absolute monarchy\n- Prussia joined Austria; other European powers watched nervously\n- French armies initially suffered defeats\n\nSeptember Massacres (1792):\n- Mobs killed over 1,000 prisoners in Paris\n- Victims included clergy, nobles, and common criminals\n- Motivated by fear of counter-revolutionary plots and external invasion\n\nAbolition of Monarchy (September 1792):\n- National Convention abolished the monarchy\n- Proclaimed France a republic\n- Symbolized the radical turn of the Revolution\n\nTrial and Execution of Louis XVI (January 1793):\n- Louis XVI was tried for treason and conspiracy with foreign enemies\n- Found guilty by the Convention\n- Executed by guillotine on January 21, 1793\n- Shocked Europe and intensified foreign opposition to the Revolution\n\nThe Reign of Terror (1793-1794):\n- Committee of Public Safety, led by Maximilien Robespierre, took control\n- Instituted emergency measures to defend the Revolution\n- Established Revolutionary Tribunal to try \"enemies of the revolution\"\n- Approximately 16,000-40,000 people were executed (estimates vary)\n- Victims included Marie Antoinette, Girondin deputies, and eventually Danton\n\nKey Features of the Terror:\n- Law of Suspects allowed arrest without evidence\n- Revolutionary calendar replaced Christian calendar\n- Dechristianization campaign attacked Catholic Church\n- Price controls (Law of the Maximum) on food and goods\n- Mass conscription (levée en masse) created large revolutionary army\n- Republic of Virtue promoted revolutionary ideals\n\nThe Thermidorian Reaction (July 1794):\n- Robespierre and allies were arrested and executed\n- Named after the month of Thermidor in the revolutionary calendar\n- Marked the end of the Reign of Terror\n- More moderate policies were gradually adopted\n\nPHASE 3: THE DIRECTORY (1795-1799)\n\nConstitution of Year III (1795):\n- Established a five-member Directory as executive\n- Created a bicameral legislature\n- Restored property qualifications for voting\n- Attempted to create stability and prevent dictatorship\n\nChallenges Facing the Directory:\n- Threats from royalists wanting to restore monarchy\n- Threats from radical Jacobins wanting more revolutionary change\n- Ongoing wars with European coalitions\n- Economic instability and inflation\n- Corruption and political weakness\n\nRise of Napoleon Bonaparte:\n- Successful military general who gained popularity through victories in Italy\n- Seen as a stabilizing figure amid political chaos\n- Returned from Egypt in 1799\n\nCoup of 18 Brumaire (November 9, 1799):\n- Napoleon overthrew the Directory with military support\n- Established the Consulate with Napoleon as First Consul\n- Effectively ended the Revolution\n- Marked the beginning of Napoleon\'s path to emperor\n\nConsequences and Legacy\n\nIMMEDIATE CONSEQUENCES IN FRANCE\n\nPolitical Changes:\n- End of absolute monarchy and feudalism\n- Establishment of principles of popular sovereignty and representative government\n- Creation of modern bureaucratic state\n- Centralization of administrative power\n- Legal equality before the law\n\nSocial Changes:\n- Abolition of privileges based on birth\n- Redistribution of land from Church and nobility\n- Growth of bourgeois power and influence\n- Changes in family law, including easier divorce\n- Metric system introduced\n\nNapoleonic Code (1804):\n- Codified revolutionary legal reforms\n- Established equality before the law, property rights, and secular marriage\n- Preserved many revolutionary achievements\n- Served as model for legal systems worldwide\n\nIMPACT ON EUROPE AND THE WORLD\n\nSpread of Revolutionary Ideas:\n- Concepts of nationalism, popular sovereignty, and human rights spread across Europe\n- Inspired independence movements in Latin America\n- Influenced democratic and reform movements throughout the 19th century\n\nNapoleonic Wars (1803-1815):\n- France\'s revolutionary armies spread revolutionary ideas\n- Redrew European map and destroyed Holy Roman Empire\n- Stimulated nationalist reactions in occupied territories\n- Led to Congress of Vienna and attempt to restore old order\n\nLong-term Political Legacy:\n- Demonstrated possibility of overthrowing traditional political order\n- Inspired revolutions in 1830 and 1848\n- Contributed to gradual democratization of European states\n- Established modern concepts of left and right in politics\n\nHISTORIOGRAPHICAL DEBATES\n\nHistorians continue to debate various aspects of the French Revolution:\n\nWas the Terror Necessary?\n- Some argue it was needed to save the Revolution from internal and external enemies\n- Others view it as an unnecessary descent into violence that betrayed revolutionary ideals\n\nRole of the Sans-Culottes:\n- Debate over whether the Revolution was driven from below by popular classes\n- Or directed from above by bourgeois politicians\n\nEconomic vs. Political Causes:\n- Marxist historians emphasized class conflict and economic factors\n- Revisionist historians stress political culture and ideology\n- Current scholarship often combines multiple approaches\n\nWas it a Bourgeois Revolution?\n- Traditional view: Revolution transferred power from nobility to bourgeoisie\n- Revisionist critique: Bourgeoisie and nobility often had similar interests\n- Modern synthesis: Revolution had multiple causes and beneficiaries\n\nConclusion\n\nThe French Revolution was a complex, multifaceted event that transformed not only France but also influenced the entire world. From its origins in financial crisis and social inequality to its radical phase of terror and violence, to its eventual stabilization under Napoleon, the Revolution demonstrated both the power of ideas and the dangers of political extremism.\n\nThe Revolution\'s legacy includes the spread of Enlightenment ideals, the rise of nationalism, the end of feudalism in Europe, and the ongoing struggle between various forms of government and political philosophies. Its principles of liberty, equality, and fraternity, though imperfectly realized during the Revolution itself, continue to inspire democratic movements worldwide.\n\nKey Points to Remember:\n- The Revolution had multiple causes: social inequality, financial crisis, Enlightenment ideas, and weak leadership\n- The Revolution progressed through distinct phases: moderate, radical, and conservative\n- The Reign of Terror remains one of the most controversial periods\n- The Revolution had profound impacts on France, Europe, and the world\n- Its ideas about democracy, rights, and citizenship continue to influence political thought today', '2025-12-18 11:33:25', 'completed'),
+(32, 16, 'french', 'french_revolution.txt', '/home/gertrude.akagbo/public_html/ai-study-companion/api/../uploads/note_6944351674de2_1766077718.txt', 'THE FRENCH REVOLUTION: CAUSES, EVENTS, AND CONSEQUENCES (1789-1799)\n\nIntroduction\n\nThe French Revolution was one of the most significant events in world history, fundamentally transforming France and influencing political thought and revolutionary movements worldwide. Beginning in 1789 and lasting approximately ten years, the Revolution overthrew the absolute monarchy, established a republic, experienced violent periods of political turmoil, and ultimately paved the way for Napoleon Bonaparte\'s rise to power. The Revolution\'s ideals of liberty, equality, and fraternity continue to resonate in democratic movements around the globe.\n\nBackground and Causes of the Revolution\n\nSOCIAL STRUCTURE: THE ANCIEN RÉGIME\n\nPre-revolutionary French society was divided into three estates:\n\nFirst Estate - The Clergy:\n- Comprised approximately 0.5% of the population (about 130,000 people)\n- Owned about 10% of all land\n- Exempt from most taxes\n- Collected tithes from the general population\n- Had significant political influence\n\nSecond Estate - The Nobility:\n- Comprised approximately 1.5% of the population (about 400,000 people)\n- Owned about 25% of all land\n- Largely exempt from taxes\n- Held most high positions in government, military, and church\n- Enjoyed numerous privileges and legal advantages\n\nThird Estate - Everyone Else:\n- Comprised approximately 98% of the population (about 27 million people)\n- Included peasants, urban workers, and the bourgeoisie (middle class)\n- Bore nearly all the tax burden\n- Had little political power despite their numbers\n- The bourgeoisie were educated and wealthy but lacked social status and political influence\n\nECONOMIC CAUSES\n\nFrance faced a severe financial crisis in the 1780s:\n\nRoyal Debt:\n- France had accumulated enormous debt from wars, including support for the American Revolution\n- King Louis XVI\'s extravagant court at Versailles cost immense amounts\n- Poor financial management and corruption in tax collection\n- The government spent more than it collected in revenue\n\nTaxation System:\n- The tax burden fell almost entirely on the Third Estate\n- The clergy and nobility were largely exempt from taxation\n- Indirect taxes (like the gabelle on salt) hit the poorest hardest\n- Tax farming system was corrupt and inefficient\n\nEconomic Hardship:\n- Bad harvests in 1788 led to bread shortages\n- Bread prices soared, consuming up to 80% of workers\' wages\n- Unemployment rose in urban areas\n- Manufacturing and trade were in decline\n\nPOLITICAL CAUSES\n\nThe Enlightenment:\n- Ideas from philosophers like Voltaire, Rousseau, and Montesquieu spread widely\n- Concepts of natural rights, social contract, and popular sovereignty challenged absolute monarchy\n- The success of the American Revolution inspired French reformers\n- Growing literacy and publication of pamphlets spread revolutionary ideas\n\nWeak Leadership:\n- Louis XVI was indecisive and lacked political skill\n- Queen Marie Antoinette was unpopular and seen as out of touch\n- The king\'s attempts at reform were blocked by privileged estates\n- Loss of confidence in the monarchy\'s ability to solve problems\n\nMajor Events of the Revolution\n\nPHASE 1: THE MODERATE BEGINNING (1789-1792)\n\nThe Estates-General (May 1789):\n- Louis XVI called the Estates-General for the first time since 1614\n- Sought to raise taxes to address financial crisis\n- Voting method became a major issue: by order (favoring First and Second Estates) vs. by head (favoring Third Estate)\n\nThe National Assembly (June 1789):\n- Third Estate delegates declared themselves the National Assembly\n- Invited other estates to join them\n- Took the Tennis Court Oath, vowing not to disband until France had a constitution\n- Marked the beginning of representative government\n\nThe Storming of the Bastille (July 14, 1789):\n- A Parisian mob stormed the Bastille fortress-prison\n- Seeking weapons and gunpowder\n- Killed the governor and several guards\n- Symbolized the people\'s defiance of royal authority\n- Sparked revolts across France; July 14 is now France\'s national holiday\n\nThe Great Fear (July-August 1789):\n- Peasant revolts spread across the countryside\n- Peasants attacked nobles\' estates and burned feudal documents\n- Driven by rumors of aristocratic conspiracy\n\nAugust Decrees (August 4, 1789):\n- National Assembly abolished feudalism\n- Eliminated noble privileges, tithes, and seigneurial rights\n- Proclaimed equal taxation for all\n\nDeclaration of the Rights of Man and Citizen (August 26, 1789):\n- Proclaimed natural rights: liberty, property, security, and resistance to oppression\n- Declared equality before the law\n- Established principles of popular sovereignty and due process\n- Influenced by American Declaration of Independence and Enlightenment thought\n\nWomen\'s March on Versailles (October 1789):\n- Thousands of women marched from Paris to Versailles\n- Demanded bread and the king\'s attention to food shortages\n- Forced the royal family to move from Versailles to Paris\n- Demonstrated popular power and the king\'s vulnerability\n\nCivil Constitution of the Clergy (1790):\n- Made the Catholic Church subordinate to the state\n- Required clergy to swear an oath of loyalty to the state\n- Created deep divisions between revolutionaries and the Church\n- Many clergy refused the oath, creating \"refractory\" priests\n\nConstitution of 1791:\n- Established a constitutional monarchy\n- Created a Legislative Assembly elected by active citizens (property-owning men)\n- Limited royal power with suspensive veto\n- Preserved social distinctions despite rhetoric of equality\n\nPHASE 2: THE RADICAL REVOLUTION (1792-1794)\n\nWar and External Threats (1792):\n- France declared war on Austria (April 1792)\n- Revolutionary government feared foreign intervention to restore absolute monarchy\n- Prussia joined Austria; other European powers watched nervously\n- French armies initially suffered defeats\n\nSeptember Massacres (1792):\n- Mobs killed over 1,000 prisoners in Paris\n- Victims included clergy, nobles, and common criminals\n- Motivated by fear of counter-revolutionary plots and external invasion\n\nAbolition of Monarchy (September 1792):\n- National Convention abolished the monarchy\n- Proclaimed France a republic\n- Symbolized the radical turn of the Revolution\n\nTrial and Execution of Louis XVI (January 1793):\n- Louis XVI was tried for treason and conspiracy with foreign enemies\n- Found guilty by the Convention\n- Executed by guillotine on January 21, 1793\n- Shocked Europe and intensified foreign opposition to the Revolution\n\nThe Reign of Terror (1793-1794):\n- Committee of Public Safety, led by Maximilien Robespierre, took control\n- Instituted emergency measures to defend the Revolution\n- Established Revolutionary Tribunal to try \"enemies of the revolution\"\n- Approximately 16,000-40,000 people were executed (estimates vary)\n- Victims included Marie Antoinette, Girondin deputies, and eventually Danton\n\nKey Features of the Terror:\n- Law of Suspects allowed arrest without evidence\n- Revolutionary calendar replaced Christian calendar\n- Dechristianization campaign attacked Catholic Church\n- Price controls (Law of the Maximum) on food and goods\n- Mass conscription (levée en masse) created large revolutionary army\n- Republic of Virtue promoted revolutionary ideals\n\nThe Thermidorian Reaction (July 1794):\n- Robespierre and allies were arrested and executed\n- Named after the month of Thermidor in the revolutionary calendar\n- Marked the end of the Reign of Terror\n- More moderate policies were gradually adopted\n\nPHASE 3: THE DIRECTORY (1795-1799)\n\nConstitution of Year III (1795):\n- Established a five-member Directory as executive\n- Created a bicameral legislature\n- Restored property qualifications for voting\n- Attempted to create stability and prevent dictatorship\n\nChallenges Facing the Directory:\n- Threats from royalists wanting to restore monarchy\n- Threats from radical Jacobins wanting more revolutionary change\n- Ongoing wars with European coalitions\n- Economic instability and inflation\n- Corruption and political weakness\n\nRise of Napoleon Bonaparte:\n- Successful military general who gained popularity through victories in Italy\n- Seen as a stabilizing figure amid political chaos\n- Returned from Egypt in 1799\n\nCoup of 18 Brumaire (November 9, 1799):\n- Napoleon overthrew the Directory with military support\n- Established the Consulate with Napoleon as First Consul\n- Effectively ended the Revolution\n- Marked the beginning of Napoleon\'s path to emperor\n\nConsequences and Legacy\n\nIMMEDIATE CONSEQUENCES IN FRANCE\n\nPolitical Changes:\n- End of absolute monarchy and feudalism\n- Establishment of principles of popular sovereignty and representative government\n- Creation of modern bureaucratic state\n- Centralization of administrative power\n- Legal equality before the law\n\nSocial Changes:\n- Abolition of privileges based on birth\n- Redistribution of land from Church and nobility\n- Growth of bourgeois power and influence\n- Changes in family law, including easier divorce\n- Metric system introduced\n\nNapoleonic Code (1804):\n- Codified revolutionary legal reforms\n- Established equality before the law, property rights, and secular marriage\n- Preserved many revolutionary achievements\n- Served as model for legal systems worldwide\n\nIMPACT ON EUROPE AND THE WORLD\n\nSpread of Revolutionary Ideas:\n- Concepts of nationalism, popular sovereignty, and human rights spread across Europe\n- Inspired independence movements in Latin America\n- Influenced democratic and reform movements throughout the 19th century\n\nNapoleonic Wars (1803-1815):\n- France\'s revolutionary armies spread revolutionary ideas\n- Redrew European map and destroyed Holy Roman Empire\n- Stimulated nationalist reactions in occupied territories\n- Led to Congress of Vienna and attempt to restore old order\n\nLong-term Political Legacy:\n- Demonstrated possibility of overthrowing traditional political order\n- Inspired revolutions in 1830 and 1848\n- Contributed to gradual democratization of European states\n- Established modern concepts of left and right in politics\n\nHISTORIOGRAPHICAL DEBATES\n\nHistorians continue to debate various aspects of the French Revolution:\n\nWas the Terror Necessary?\n- Some argue it was needed to save the Revolution from internal and external enemies\n- Others view it as an unnecessary descent into violence that betrayed revolutionary ideals\n\nRole of the Sans-Culottes:\n- Debate over whether the Revolution was driven from below by popular classes\n- Or directed from above by bourgeois politicians\n\nEconomic vs. Political Causes:\n- Marxist historians emphasized class conflict and economic factors\n- Revisionist historians stress political culture and ideology\n- Current scholarship often combines multiple approaches\n\nWas it a Bourgeois Revolution?\n- Traditional view: Revolution transferred power from nobility to bourgeoisie\n- Revisionist critique: Bourgeoisie and nobility often had similar interests\n- Modern synthesis: Revolution had multiple causes and beneficiaries\n\nConclusion\n\nThe French Revolution was a complex, multifaceted event that transformed not only France but also influenced the entire world. From its origins in financial crisis and social inequality to its radical phase of terror and violence, to its eventual stabilization under Napoleon, the Revolution demonstrated both the power of ideas and the dangers of political extremism.\n\nThe Revolution\'s legacy includes the spread of Enlightenment ideals, the rise of nationalism, the end of feudalism in Europe, and the ongoing struggle between various forms of government and political philosophies. Its principles of liberty, equality, and fraternity, though imperfectly realized during the Revolution itself, continue to inspire democratic movements worldwide.\n\nKey Points to Remember:\n- The Revolution had multiple causes: social inequality, financial crisis, Enlightenment ideas, and weak leadership\n- The Revolution progressed through distinct phases: moderate, radical, and conservative\n- The Reign of Terror remains one of the most controversial periods\n- The Revolution had profound impacts on France, Europe, and the world\n- Its ideas about democracy, rights, and citizenship continue to influence political thought today', '2025-12-18 17:08:38', 'completed');
 
 -- --------------------------------------------------------
 
@@ -214,10 +234,10 @@ INSERT INTO `notes` (`note_id`, `user_id`, `title`, `original_filename`, `file_p
 --
 
 CREATE TABLE `quiz_answers` (
-  `answer_id` int(11) NOT NULL,
-  `attempt_id` int(11) NOT NULL,
-  `question_id` int(11) NOT NULL,
-  `user_answer` text NOT NULL,
+  `answer_id` int NOT NULL,
+  `attempt_id` int NOT NULL,
+  `question_id` int NOT NULL,
+  `user_answer` text COLLATE utf8mb4_general_ci NOT NULL,
   `is_correct` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -235,7 +255,17 @@ INSERT INTO `quiz_answers` (`answer_id`, `attempt_id`, `question_id`, `user_answ
 (84, 10, 315, 'Regular review and spaced repetition', 1),
 (85, 10, 316, '', 0),
 (86, 10, 317, 'It wastes time', 0),
-(87, 10, 318, '', 0);
+(87, 10, 318, '', 0),
+(88, 11, 339, 'Understanding fundamental concepts and principles', 1),
+(89, 11, 340, '', 0),
+(90, 11, 341, 'Passive reading only', 0),
+(91, 11, 342, '', 0),
+(92, 11, 343, 'Random facts', 0),
+(93, 11, 344, '', 0),
+(94, 11, 345, 'Regular review and spaced repetition', 1),
+(95, 11, 346, '', 0),
+(96, 11, 347, '', 0),
+(97, 11, 348, '', 0);
 
 -- --------------------------------------------------------
 
@@ -244,14 +274,14 @@ INSERT INTO `quiz_answers` (`answer_id`, `attempt_id`, `question_id`, `user_answ
 --
 
 CREATE TABLE `quiz_attempts` (
-  `attempt_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `material_id` int(11) NOT NULL,
+  `attempt_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `material_id` int NOT NULL,
   `score` decimal(5,2) NOT NULL,
-  `total_questions` int(11) NOT NULL,
-  `correct_answers` int(11) NOT NULL,
-  `time_taken` int(11) DEFAULT NULL,
-  `completed_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `total_questions` int NOT NULL,
+  `correct_answers` int NOT NULL,
+  `time_taken` int DEFAULT NULL,
+  `completed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -259,7 +289,8 @@ CREATE TABLE `quiz_attempts` (
 --
 
 INSERT INTO `quiz_attempts` (`attempt_id`, `user_id`, `material_id`, `score`, `total_questions`, `correct_answers`, `time_taken`, `completed_at`) VALUES
-(10, 13, 105, 10.00, 10, 1, 24, '2025-12-18 11:20:14');
+(10, 13, 105, 10.00, 10, 1, 24, '2025-12-18 11:20:14'),
+(11, 16, 114, 20.00, 10, 2, 26, '2025-12-18 17:10:00');
 
 -- --------------------------------------------------------
 
@@ -268,14 +299,14 @@ INSERT INTO `quiz_attempts` (`attempt_id`, `user_id`, `material_id`, `score`, `t
 --
 
 CREATE TABLE `quiz_questions` (
-  `question_id` int(11) NOT NULL,
-  `material_id` int(11) NOT NULL,
-  `question_text` text NOT NULL,
-  `question_type` enum('multiple_choice','short_answer') NOT NULL,
-  `correct_answer` text NOT NULL,
-  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`options`)),
-  `order_num` int(11) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `question_id` int NOT NULL,
+  `material_id` int NOT NULL,
+  `question_text` text COLLATE utf8mb4_general_ci NOT NULL,
+  `question_type` enum('multiple_choice','short_answer') COLLATE utf8mb4_general_ci NOT NULL,
+  `correct_answer` text COLLATE utf8mb4_general_ci NOT NULL,
+  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  `order_num` int DEFAULT '0'
+) ;
 
 --
 -- Dumping data for table `quiz_questions`
@@ -321,7 +352,17 @@ INSERT INTO `quiz_questions` (`question_id`, `material_id`, `question_text`, `qu
 (335, 111, 'Which strategy helps with long-term retention?', 'multiple_choice', 'Regular review and spaced repetition', '[\"Regular review and spaced repetition\",\"One-time reading\",\"Ignoring the material\",\"Hoping to remember\"]', 7),
 (336, 111, 'What indicates that you truly understand this topic?', 'short_answer', 'True understanding is shown by the ability to explain concepts clearly, apply them to new situations, and see connections to other topics.', NULL, 8),
 (337, 111, 'Why is it important to understand the connections between concepts?', 'multiple_choice', 'It creates a comprehensive framework for knowledge', '[\"It creates a comprehensive framework for knowledge\",\"It makes learning more difficult\",\"It is not important\",\"It wastes time\"]', 9),
-(338, 111, 'Summarize the key takeaways from this study material.', 'short_answer', 'The key takeaways include understanding the study material\'s core principles, their practical applications, and how concepts interconnect to form comprehensive knowledge.', NULL, 10);
+(338, 111, 'Summarize the key takeaways from this study material.', 'short_answer', 'The key takeaways include understanding the study material\'s core principles, their practical applications, and how concepts interconnect to form comprehensive knowledge.', NULL, 10),
+(339, 114, 'What is the primary focus of this material about the study material?', 'multiple_choice', 'Understanding fundamental concepts and principles', '[\"Understanding fundamental concepts and principles\",\"Memorizing facts only\",\"Skipping important details\",\"Reading quickly without comprehension\"]', 1),
+(340, 114, 'Explain the main concept from the study material in your own words.', 'short_answer', 'The main concept involves understanding the foundational principles of the study material and how they apply to practical situations.', NULL, 2),
+(341, 114, 'Which approach is most effective for mastering this material?', 'multiple_choice', 'Active learning with practice and review', '[\"Active learning with practice and review\",\"Passive reading only\",\"Last-minute cramming\",\"Skipping practice exercises\"]', 3),
+(342, 114, 'How do the different concepts in this material relate to each other?', 'short_answer', 'The concepts are interconnected, with foundational ideas supporting more advanced topics and creating a comprehensive framework.', NULL, 4),
+(343, 114, 'What is the most important thing to understand first?', 'multiple_choice', 'The fundamental definitions and core principles', '[\"The fundamental definitions and core principles\",\"Only the advanced topics\",\"The least important details\",\"Random facts\"]', 5),
+(344, 114, 'Describe how this knowledge can be applied practically.', 'short_answer', 'This knowledge can be applied through problem-solving, real-world scenarios, and practical implementation of concepts.', NULL, 6),
+(345, 114, 'Which strategy helps with long-term retention?', 'multiple_choice', 'Regular review and spaced repetition', '[\"Regular review and spaced repetition\",\"One-time reading\",\"Ignoring the material\",\"Hoping to remember\"]', 7),
+(346, 114, 'What indicates that you truly understand this topic?', 'short_answer', 'True understanding is shown by the ability to explain concepts clearly, apply them to new situations, and see connections to other topics.', NULL, 8),
+(347, 114, 'Why is it important to understand the connections between concepts?', 'multiple_choice', 'It creates a comprehensive framework for knowledge', '[\"It creates a comprehensive framework for knowledge\",\"It makes learning more difficult\",\"It is not important\",\"It wastes time\"]', 9),
+(348, 114, 'Summarize the key takeaways from this study material.', 'short_answer', 'The key takeaways include understanding the study material\'s core principles, their practical applications, and how concepts interconnect to form comprehensive knowledge.', NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -330,11 +371,11 @@ INSERT INTO `quiz_questions` (`question_id`, `material_id`, `question_text`, `qu
 --
 
 CREATE TABLE `study_materials` (
-  `material_id` int(11) NOT NULL,
-  `note_id` int(11) NOT NULL,
-  `material_type` enum('summary','flashcard_set','quiz_set') NOT NULL,
-  `content` text DEFAULT NULL,
-  `generated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `material_id` int NOT NULL,
+  `note_id` int NOT NULL,
+  `material_type` enum('summary','flashcard_set','quiz_set') COLLATE utf8mb4_general_ci NOT NULL,
+  `content` text COLLATE utf8mb4_general_ci,
+  `generated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_accessed` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -354,7 +395,10 @@ INSERT INTO `study_materials` (`material_id`, `note_id`, `material_type`, `conte
 (105, 29, 'quiz_set', NULL, '2025-12-18 11:19:04', NULL),
 (109, 31, 'summary', '**📚 Mock Summary (Rate Limit Fallback)**\n\nThis is a comprehensive summary generated from your study material about Introduction\n\nThe French. The content has been analyzed and key concepts have been extracted.\n\n### Main Concepts\n- Understanding of fundamental principles and core ideas\n- Key definitions and terminology relevant to the subject\n- Important relationships between different concepts\n- Practical applications and real-world examples\n\n### Key Points\n1. **Foundation**: The material establishes a strong foundation in the subject area\n2. **Development**: Progressive development of ideas from basic to advanced\n3. **Application**: Practical applications that demonstrate understanding\n4. **Synthesis**: Integration of concepts into a cohesive framework\n\n### Important Details\nThe study material covers essential information that students should master. Understanding these concepts requires careful review and practice. The relationships between topics are crucial for comprehensive knowledge.\n\n**Note**: This is mock data generated due to API rate limits. For actual AI analysis, wait 24 hours or add credits to your OpenRouter account.', '2025-12-18 11:33:28', NULL),
 (110, 31, 'flashcard_set', NULL, '2025-12-18 11:33:31', NULL),
-(111, 31, 'quiz_set', NULL, '2025-12-18 11:33:34', NULL);
+(111, 31, 'quiz_set', NULL, '2025-12-18 11:33:34', NULL),
+(112, 32, 'summary', '**📚 Mock Summary (Rate Limit Fallback)**\n\nThis is a comprehensive summary generated from your study material about Introduction\n\nThe French. The content has been analyzed and key concepts have been extracted.\n\n### Main Concepts\n- Understanding of fundamental principles and core ideas\n- Key definitions and terminology relevant to the subject\n- Important relationships between different concepts\n- Practical applications and real-world examples\n\n### Key Points\n1. **Foundation**: The material establishes a strong foundation in the subject area\n2. **Development**: Progressive development of ideas from basic to advanced\n3. **Application**: Practical applications that demonstrate understanding\n4. **Synthesis**: Integration of concepts into a cohesive framework\n\n### Important Details\nThe study material covers essential information that students should master. Understanding these concepts requires careful review and practice. The relationships between topics are crucial for comprehensive knowledge.\n\n**Note**: This is mock data generated due to API rate limits. For actual AI analysis, wait 24 hours or add credits to your OpenRouter account.', '2025-12-18 17:08:41', NULL),
+(113, 32, 'flashcard_set', NULL, '2025-12-18 17:08:44', NULL),
+(114, 32, 'quiz_set', NULL, '2025-12-18 17:08:46', NULL);
 
 -- --------------------------------------------------------
 
@@ -363,12 +407,12 @@ INSERT INTO `study_materials` (`material_id`, `note_id`, `material_type`, `conte
 --
 
 CREATE TABLE `study_sessions` (
-  `session_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `material_id` int(11) NOT NULL,
-  `session_type` enum('flashcard','quiz','summary') NOT NULL,
-  `duration` int(11) DEFAULT 0,
-  `session_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `session_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `material_id` int NOT NULL,
+  `session_type` enum('flashcard','quiz','summary') COLLATE utf8mb4_general_ci NOT NULL,
+  `duration` int DEFAULT '0',
+  `session_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -378,10 +422,10 @@ CREATE TABLE `study_sessions` (
 --
 
 CREATE TABLE `teacher_students` (
-  `id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
-  `enrolled_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` int NOT NULL,
+  `teacher_id` int NOT NULL,
+  `student_id` int NOT NULL,
+  `enrolled_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -390,7 +434,11 @@ CREATE TABLE `teacher_students` (
 
 INSERT INTO `teacher_students` (`id`, `teacher_id`, `student_id`, `enrolled_date`) VALUES
 (1, 12, 13, '2025-12-18 11:18:17'),
-(2, 12, 14, '2025-12-18 11:29:59');
+(2, 12, 14, '2025-12-18 11:29:59'),
+(3, 12, 15, '2025-12-18 13:23:48'),
+(4, 17, 16, '2025-12-18 17:13:31'),
+(5, 19, 16, '2025-12-18 17:51:52'),
+(6, 21, 20, '2025-12-18 18:28:23');
 
 -- --------------------------------------------------------
 
@@ -399,13 +447,15 @@ INSERT INTO `teacher_students` (`id`, `teacher_id`, `student_id`, `enrolled_date
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
-  `full_name` varchar(100) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `role` enum('student','teacher') NOT NULL DEFAULT 'student',
-  `class_code` varchar(10) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `user_id` int NOT NULL,
+  `full_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `role` enum('student','teacher') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'student',
+  `remember_token` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `remember_expires` datetime DEFAULT NULL,
+  `class_code` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_login` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -413,17 +463,24 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `full_name`, `email`, `password_hash`, `role`, `class_code`, `created_at`, `last_login`) VALUES
-(1, 'Amaba', 'amaba@gmail.com', '$2y$10$U/jbzfnhlglZljs3QVqYCuapDoq21e1p6T28JhPKNGJe1KVFcxD8G', 'student', NULL, '2025-12-05 20:26:13', '2025-12-05 21:08:30'),
-(6, 'getty', 'getty@gmail.com', '$2y$10$I8DE0GscDJX6owTzirqZ8.twB6PPM/QLZ1kfQWGwL6yMP9pTcE5Gu', 'student', NULL, '2025-12-18 00:29:04', '2025-12-18 01:30:07'),
-(7, 'Test User', 'test@example.com', '$2y$10$sbLJkAz/6rXgZSuJT7iyf.k13EeVTwLw.mZum/Ydms2/D8UXU9Rl2', 'student', NULL, '2025-12-18 08:10:08', '2025-12-18 08:10:51'),
-(8, 'John Doe', 'john@example.com', '$2y$10$NB.PmKRlJ.0jxp4y9c7PmONdKL1.YNBRIjUnPMcGvCD06N2vMmqA2', 'student', NULL, '2025-12-18 08:13:44', NULL),
-(9, 'Test User', 'test1135@example.com', '$2y$10$5C3QHuOze.1RS1eJ/TauXuo3vVt0bWs72j/oXmbmvAQ.RsQTBYBaW', 'student', NULL, '2025-12-18 08:30:15', NULL),
-(10, 'Sub Agent', 'subagent@example.com', '$2y$10$NB.PmKRlJ.0jxp4y9c7PmONdKL1.YNBRIjUnPMcGvCDbVNkvfncm6', 'student', NULL, '2025-12-18 08:31:11', '2025-12-18 08:47:52'),
-(11, 'zaza', 'ama@gmail.com', '$2y$10$RrRmkVbrPgDI68O7NB.TvuHSUhNgE3DeOq5CVelrTHbIDy1q/cAz.', 'student', NULL, '2025-12-18 09:12:34', '2025-12-18 10:23:29'),
-(12, 'Sampah', 'sampah@gmail.com', '$2y$10$oO5mNLXLEMhtKpUrVWgduuchTUXp6VKApxWgd/r/UZLrmn4KV.HQK', 'teacher', 'C52-C1F', '2025-12-18 10:56:52', '2025-12-18 12:18:42'),
-(13, 'kojo', 'kojo@gmail.com', '$2y$10$8lyRED3ZMIkeivsy/NWtXONPfjK9OrIcPfwuKFWL52KKBPM.Bn54y', 'student', NULL, '2025-12-18 11:10:17', '2025-12-18 11:18:11'),
-(14, 'jada', 'jada@gmail.com', '$2y$10$EqBmo5z/hRZBaY.f70OZTumHHeKKmBsHcEGdDVzrVuBgGVqKeaaFu', 'student', NULL, '2025-12-18 11:28:36', '2025-12-18 12:18:59');
+INSERT INTO `users` (`user_id`, `full_name`, `email`, `password_hash`, `role`, `remember_token`, `remember_expires`, `class_code`, `created_at`, `last_login`) VALUES
+(1, 'Amaba', 'amaba@gmail.com', '$2y$10$U/jbzfnhlglZljs3QVqYCuapDoq21e1p6T28JhPKNGJe1KVFcxD8G', 'student', NULL, NULL, NULL, '2025-12-05 20:26:13', '2025-12-05 21:08:30'),
+(6, 'getty', 'getty@gmail.com', '$2y$10$I8DE0GscDJX6owTzirqZ8.twB6PPM/QLZ1kfQWGwL6yMP9pTcE5Gu', 'student', NULL, NULL, NULL, '2025-12-18 00:29:04', '2025-12-18 01:30:07'),
+(7, 'Test User', 'test@example.com', '$2y$10$sbLJkAz/6rXgZSuJT7iyf.k13EeVTwLw.mZum/Ydms2/D8UXU9Rl2', 'student', NULL, NULL, NULL, '2025-12-18 08:10:08', '2025-12-18 08:10:51'),
+(8, 'John Doe', 'john@example.com', '$2y$10$NB.PmKRlJ.0jxp4y9c7PmONdKL1.YNBRIjUnPMcGvCD06N2vMmqA2', 'student', NULL, NULL, NULL, '2025-12-18 08:13:44', NULL),
+(9, 'Test User', 'test1135@example.com', '$2y$10$5C3QHuOze.1RS1eJ/TauXuo3vVt0bWs72j/oXmbmvAQ.RsQTBYBaW', 'student', NULL, NULL, NULL, '2025-12-18 08:30:15', NULL),
+(10, 'Sub Agent', 'subagent@example.com', '$2y$10$NB.PmKRlJ.0jxp4y9c7PmONdKL1.YNBRIjUnPMcGvCDbVNkvfncm6', 'student', NULL, NULL, NULL, '2025-12-18 08:31:11', '2025-12-18 08:47:52'),
+(11, 'zaza', 'ama@gmail.com', '$2y$10$RrRmkVbrPgDI68O7NB.TvuHSUhNgE3DeOq5CVelrTHbIDy1q/cAz.', 'student', NULL, NULL, NULL, '2025-12-18 09:12:34', '2025-12-18 10:23:29'),
+(12, 'Sampah', 'sampah@gmail.com', '$2y$10$oO5mNLXLEMhtKpUrVWgduuchTUXp6VKApxWgd/r/UZLrmn4KV.HQK', 'teacher', NULL, NULL, 'C52-C1F', '2025-12-18 10:56:52', '2025-12-18 13:32:51'),
+(13, 'kojo', 'kojo@gmail.com', '$2y$10$8lyRED3ZMIkeivsy/NWtXONPfjK9OrIcPfwuKFWL52KKBPM.Bn54y', 'student', NULL, NULL, NULL, '2025-12-18 11:10:17', '2025-12-18 11:18:11'),
+(14, 'jada', 'jada@gmail.com', '$2y$10$EqBmo5z/hRZBaY.f70OZTumHHeKKmBsHcEGdDVzrVuBgGVqKeaaFu', 'student', NULL, NULL, NULL, '2025-12-18 11:28:36', '2025-12-18 12:45:01'),
+(15, 'mel', 'mel@gmail.com', '$2y$10$8uhMFH0qSj5/TWrPOPMyge6rPHeZbg.kinVf0224q5VxhQ0hlNrxS', 'student', '9e987787f94df5e8db167cdb351757bce3e0f4f15b8ef29565b35aa874f8d6af', '2026-01-17 13:57:45', NULL, '2025-12-18 13:23:27', '2025-12-18 13:57:45'),
+(16, 'Fava', 'favour@gmail.com', '$2y$10$q/wx3RrOg6wxdsFpg16iY.Q2UKghc0gOG5KC4/RWTW9yp3sHQN2fG', 'student', '2cb6760c5506a52e300a08e3558af7e02c59e9818d3c27fb1182f4f8de9a9ca9', '2026-01-17 16:37:02', NULL, '2025-12-18 16:36:53', '2025-12-18 18:01:20'),
+(17, 'Jomens', 'jomens@gmail.com', '$2y$10$gM9La2cJcrkDXaUvovMIp.85i0y4Pyy4hs.YYZGVpT9ELAE9ChZQ6', 'teacher', '724ec2ba183517ab807e69ede176f54026a7c8806e395f52ee1f9345a8f63a3f', '2026-01-17 17:12:07', 'XDA-6NJ', '2025-12-18 17:10:50', '2025-12-18 18:01:56'),
+(18, 'Prisca', 'prisca@gmail.com', '$2y$10$AZQj.WaOSIjgiIlpONlXjejpoLQPQHd8870bVD6.UROcxhSEifwte', 'teacher', NULL, NULL, 'HNS-3Z9', '2025-12-18 17:50:41', NULL),
+(19, 'Prisca', 'prisca1@gmail.com', '$2y$10$PfsOwDwZEXARVLbI.eYYue9UbhgDqrnfXSDf.G2WJyee5x5rQaMHe', 'teacher', NULL, NULL, 'XLR-U4S', '2025-12-18 17:50:56', '2025-12-18 17:51:19'),
+(20, 'Akos', 'akos@gmail.com', '$2y$10$v/wF/F9h9nDc8Ew6qlJj1enjJF.AgznhycjkQn25eSMUL5liTR3Je', 'student', NULL, NULL, NULL, '2025-12-18 18:25:25', '2025-12-18 18:25:41'),
+(21, 'Jacob', 'jacob@gmail.com', '$2y$10$kZKHWkn11C/GdISvsAV3W.igD1OphF9DL84eGG4/rXYVXtg8dOWYC', 'teacher', NULL, NULL, 'HUL-8E2', '2025-12-18 18:26:46', '2025-12-18 18:28:04');
 
 --
 -- Indexes for dumped tables
@@ -520,7 +577,8 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `class_code` (`class_code`),
-  ADD KEY `idx_email` (`email`);
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_remember_token` (`remember_token`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -530,73 +588,73 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `class_discussions`
 --
 ALTER TABLE `class_discussions`
-  MODIFY `discussion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `discussion_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `discussion_replies`
 --
 ALTER TABLE `discussion_replies`
-  MODIFY `reply_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `reply_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `flashcards`
 --
 ALTER TABLE `flashcards`
-  MODIFY `flashcard_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=555;
+  MODIFY `flashcard_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=570;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `message_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `note_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `note_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `quiz_answers`
 --
 ALTER TABLE `quiz_answers`
-  MODIFY `answer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `answer_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT for table `quiz_attempts`
 --
 ALTER TABLE `quiz_attempts`
-  MODIFY `attempt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `attempt_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `quiz_questions`
 --
 ALTER TABLE `quiz_questions`
-  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=339;
+  MODIFY `question_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `study_materials`
 --
 ALTER TABLE `study_materials`
-  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `material_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- AUTO_INCREMENT for table `study_sessions`
 --
 ALTER TABLE `study_sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `session_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `teacher_students`
 --
 ALTER TABLE `teacher_students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables

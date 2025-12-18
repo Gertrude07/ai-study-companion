@@ -674,12 +674,19 @@ try {
                 const result = await response.json();
 
                 if (result.success) {
-                    // Format the explanation
+                    // Format the explanation - properly handle markdown
                     let formatted = result.explanation;
+                    // Remove ### headers and convert to styled divs
+                    formatted = formatted.replace(/###\s+(.*?)(\n|$)/g, '<h4 style="color: #111827; margin: 1.25rem 0 0.75rem 0; font-size: 1.05rem;">$1</h4>');
+                    // Convert **bold** to <strong>
                     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    // Convert *italic* to <em>
                     formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                    formatted = formatted.replace(/### (.*?)(\n|$)/g, '<h4 style="color: #111827; margin: 1rem 0 0.5rem 0;">$1</h4>');
+                    // Convert line breaks
+                    formatted = formatted.replace(/\n\n/g, '</p><p style="margin: 0.75rem 0;">');
                     formatted = formatted.replace(/\n/g, '<br>');
+                    // Wrap in paragraph
+                    formatted = '<p style="margin: 0;">' + formatted + '</p>';
 
                     contentDiv.innerHTML = formatted;
                 } else {

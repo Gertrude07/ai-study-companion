@@ -18,14 +18,14 @@ if (!isset($_GET['note_id'])) {
     exit;
 }
 
-$noteId = (int)$_GET['note_id'];
+$noteId = (int) $_GET['note_id'];
 
 // Get summary for this note
 $studyMaterial = new StudyMaterial();
 
 try {
     $materials = $studyMaterial->getAllByNote($noteId);
-    
+
     // Find the summary material
     $summaryMaterial = null;
     foreach ($materials as $material) {
@@ -34,17 +34,17 @@ try {
             break;
         }
     }
-    
+
     if (!$summaryMaterial) {
         $_SESSION['error'] = 'No summary available for this note.';
         header('Location: materials.php');
         exit;
     }
-    
+
     $noteTitle = 'Summary';
     $summary = $summaryMaterial['content'];
     $createdAt = $summaryMaterial['created_at'];
-    
+
 } catch (Exception $e) {
     $_SESSION['error'] = 'Error loading summary: ' . $e->getMessage();
     header('Location: materials.php');
@@ -53,6 +53,7 @@ try {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,7 +104,7 @@ try {
             background: white;
             border-radius: 16px;
             padding: 3rem 2.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
 
@@ -228,6 +229,7 @@ try {
         }
 
         @media print {
+
             .sidebar,
             .action-buttons {
                 display: none !important;
@@ -267,6 +269,7 @@ try {
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard-layout">
         <!-- Sidebar -->
@@ -302,7 +305,8 @@ try {
         <main class="main-content">
             <div class="summary-container">
                 <div style="margin-bottom: 1.5rem;">
-                    <a href="materials.php?note_id=<?php echo $noteId; ?>" class="btn btn-secondary" style="text-decoration: none;">
+                    <a href="materials.php?note_id=<?php echo $noteId; ?>" class="btn btn-secondary"
+                        style="text-decoration: none;">
                         <i class="fas fa-arrow-left"></i> Back to Materials
                     </a>
                 </div>
@@ -323,18 +327,18 @@ try {
 
                 <div class="summary-card">
                     <div class="summary-content">
-                        <?php 
+                        <?php
                         // Convert plain text to formatted HTML
                         $formattedSummary = nl2br(htmlspecialchars($summary));
-                        
+
                         // Enhance formatting
                         $formattedSummary = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $formattedSummary);
                         $formattedSummary = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $formattedSummary);
-                        
+
                         // Convert numbered points to ordered list
                         $formattedSummary = preg_replace_callback(
                             '/(\d+\.\s+[^\n]+(\n|$))+/',
-                            function($matches) {
+                            function ($matches) {
                                 $items = preg_split('/\d+\.\s+/', $matches[0], -1, PREG_SPLIT_NO_EMPTY);
                                 $list = '<ol>';
                                 foreach ($items as $item) {
@@ -347,11 +351,11 @@ try {
                             },
                             $formattedSummary
                         );
-                        
+
                         // Convert bullet points to unordered list
                         $formattedSummary = preg_replace_callback(
                             '/([-•]\s+[^\n]+(\n|$))+/',
-                            function($matches) {
+                            function ($matches) {
                                 $items = preg_split('/[-•]\s+/', $matches[0], -1, PREG_SPLIT_NO_EMPTY);
                                 $list = '<ul>';
                                 foreach ($items as $item) {
@@ -364,29 +368,35 @@ try {
                             },
                             $formattedSummary
                         );
-                        
+
                         echo $formattedSummary;
                         ?>
                     </div>
                 </div>
 
                 <!-- Ask for Clarification Section -->
-                <div class="clarification-section" style="margin-top: 2rem; padding: 2rem; background: #F9FAFB; border-radius: 12px; border: 2px dashed #D1D5DB;">
+                <div class="clarification-section"
+                    style="margin-top: 2rem; padding: 2rem; background: #F9FAFB; border-radius: 12px; border: 2px dashed #D1D5DB;">
                     <h3 style="margin: 0 0 1rem 0; color: #111827; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-question-circle" style="color: #4F46E5;"></i>
                         Need More Clarification?
                     </h3>
-                    <p style="color: #6B7280; margin-bottom: 1rem;">Ask any question about this material and get a detailed explanation from AI.</p>
+                    <p style="color: #6B7280; margin-bottom: 1rem;">Ask any question about this material and get a
+                        detailed explanation from AI.</p>
                     <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="clarificationQuestion" placeholder="E.g., Can you explain this concept in simpler terms?" 
-                               style="flex: 1; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 1rem;">
-                        <button onclick="askClarification()" id="askBtn" class="action-btn btn-primary" style="white-space: nowrap;">
+                        <input type="text" id="clarificationQuestion"
+                            placeholder="E.g., Can you explain this concept in simpler terms?"
+                            style="flex: 1; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 1rem;">
+                        <button onclick="askClarification()" id="askBtn" class="action-btn btn-primary"
+                            style="white-space: nowrap;">
                             <i class="fas fa-paper-plane"></i>
                             Ask AI
                         </button>
                     </div>
-                    <div id="clarificationResponse" style="margin-top: 1rem; display: none; padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #4F46E5;">
-                        <h4 style="margin: 0 0 0.75rem 0; color: #4F46E5; display: flex; align-items: center; gap: 0.5rem;">
+                    <div id="clarificationResponse"
+                        style="margin-top: 1rem; display: none; padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #4F46E5;">
+                        <h4
+                            style="margin: 0 0 0.75rem 0; color: #4F46E5; display: flex; align-items: center; gap: 0.5rem;">
                             <i class="fas fa-robot"></i>
                             AI Explanation:
                         </h4>
@@ -422,20 +432,20 @@ try {
             const askBtn = document.getElementById('askBtn');
             const responseDiv = document.getElementById('clarificationResponse');
             const contentDiv = document.getElementById('clarificationContent');
-            
+
             const question = questionInput.value.trim();
-            
+
             if (!question) {
                 alert('Please enter a question');
                 return;
             }
-            
+
             // Disable button and show loading
             askBtn.disabled = true;
             askBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Answer...';
             responseDiv.style.display = 'block';
             contentDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI is preparing a detailed explanation...';
-            
+
             try {
                 const response = await fetch('../api/get_clarification.php', {
                     method: 'POST',
@@ -448,17 +458,24 @@ try {
                         context: 'Asking about the summary content'
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    // Format the explanation
+                    // Format the explanation - properly handle markdown
                     let formatted = result.explanation;
+                    // Remove ### headers and convert to styled divs
+                    formatted = formatted.replace(/###\s+(.*?)(\n|$)/g, '<h4 style="color: #111827; margin: 1.25rem 0 0.75rem 0; font-size: 1.05rem;">$1</h4>');
+                    // Convert **bold** to <strong>
                     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    // Convert *italic* to <em>
                     formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                    formatted = formatted.replace(/### (.*?)(\n|$)/g, '<h4 style="color: #111827; margin: 1rem 0 0.5rem 0;">$1</h4>');
+                    // Convert line breaks
+                    formatted = formatted.replace(/\n\n/g, '</p><p style="margin: 0.75rem 0;">');
                     formatted = formatted.replace(/\n/g, '<br>');
-                    
+                    // Wrap in paragraph
+                    formatted = '<p style="margin: 0;">' + formatted + '</p>';
+
                     contentDiv.innerHTML = formatted;
                 } else {
                     contentDiv.innerHTML = '<span style="color: #DC2626;">Error: ' + (result.message || 'Failed to get clarification') + '</span>';
@@ -470,13 +487,14 @@ try {
                 askBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Ask AI';
             }
         }
-        
+
         // Allow Enter key to submit
-        document.getElementById('clarificationQuestion').addEventListener('keypress', function(e) {
+        document.getElementById('clarificationQuestion').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 askClarification();
             }
         });
     </script>
 </body>
+
 </html>
