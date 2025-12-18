@@ -1,0 +1,17 @@
+# Disable Directory Listing
+Options -Indexes
+
+# Hide Server Signature
+ServerSignature Off
+
+# Protect .htaccess
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Protect config files
+<FilesMatch "(\.env|config\.php|database\.php|\.sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
