@@ -245,19 +245,38 @@ $enrollmentCount = $teacherObj->getEnrollmentCount($teacherId);
             const classCode = '<?php echo $classCode; ?>';
             const btn = document.querySelector('button[onclick="copyClassCode()"]');
 
-            navigator.clipboard.writeText(classCode).then(() => {
-                // Show success feedback
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                btn.style.background = 'rgba(16, 185, 129, 0.3)';
+            // Fallback for non-HTTPS environments
+            if (!navigator.clipboard) {
+                const textArea = document.createElement("textarea");
+                textArea.value = classCode;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showSuccess(btn);
+                } catch (err) {
+                    alert('Failed to copy: ' + err);
+                }
+                document.body.removeChild(textArea);
+                return;
+            }
 
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.background = 'rgba(255,255,255,0.2)';
-                }, 2000);
+            navigator.clipboard.writeText(classCode).then(() => {
+                showSuccess(btn);
             }).catch(err => {
                 alert('Failed to copy: ' + err);
             });
+        }
+
+        function showSuccess(btn) {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.background = 'rgba(16, 185, 129, 0.3)';
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = 'rgba(255,255,255,0.2)';
+            }, 2000);
         }
     </script>
 </body>

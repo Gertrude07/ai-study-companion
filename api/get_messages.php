@@ -35,14 +35,16 @@ try {
             sender.role as sender_role
         FROM messages m
         JOIN users sender ON m.sender_id = sender.user_id
-        WHERE (m.sender_id = :user1 AND m.receiver_id = :user2)
-           OR (m.sender_id = :user2 AND m.receiver_id = :user1)
+        WHERE (m.sender_id = :s1 AND m.receiver_id = :r1)
+           OR (m.sender_id = :s2 AND m.receiver_id = :r2)
         ORDER BY m.sent_at ASC
     ";
 
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':user1', $currentUserId, PDO::PARAM_INT);
-    $stmt->bindParam(':user2', $otherUserId, PDO::PARAM_INT);
+    $stmt->bindParam(':s1', $currentUserId, PDO::PARAM_INT);
+    $stmt->bindParam(':r1', $otherUserId, PDO::PARAM_INT);
+    $stmt->bindParam(':s2', $otherUserId, PDO::PARAM_INT);
+    $stmt->bindParam(':r2', $currentUserId, PDO::PARAM_INT);
     $stmt->execute();
 
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
