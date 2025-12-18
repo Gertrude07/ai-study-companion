@@ -17,6 +17,7 @@ $pageTitle = 'Messages';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,6 +32,7 @@ $pageTitle = 'Messages';
     </script>
     <script src="../assets/js/logout-confirm.js"></script>
 </head>
+
 <body>
     <div class="dashboard-layout">
         <!-- Sidebar -->
@@ -74,13 +76,26 @@ $pageTitle = 'Messages';
             </header>
 
             <div class="card" style="max-width: 900px; margin: 0 auto;">
+                <!-- Teacher Selector -->
+                <div id="teacherSelector" style="margin-bottom: 1rem; display: none;">
+                    <label for="teacherSelect" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                        <i class="fas fa-chalkboard-teacher"></i> Select Teacher to Message:
+                    </label>
+                    <select id="teacherSelect"
+                        style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; background: var(--bg-primary); color: var(--text-primary);">
+                        <option value="">-- Choose a teacher --</option>
+                    </select>
+                </div>
+
                 <!-- Chat Header -->
-                <div id="chatHeader" style="border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div id="chatHeader"
+                    style="border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
                     <h2 id="chatTitle"><i class="fas fa-user-circle"></i> Loading...</h2>
                 </div>
 
                 <!-- Messages Container -->
-                <div id="messagesContainer" style="min-height: 400px; max-height: 500px; overflow-y: auto; padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px; margin-bottom: 1rem;">
+                <div id="messagesContainer"
+                    style="min-height: 400px; max-height: 500px; overflow-y: auto; padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px; margin-bottom: 1rem;">
                     <p style="text-align: center; color: var(--text-secondary);">Loading messages...</p>
                 </div>
 
@@ -88,8 +103,9 @@ $pageTitle = 'Messages';
                 <form id="messageForm">
                     <input type="hidden" id="receiverId" value="">
                     <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="messageInput" placeholder="Type your message..." 
-                               style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                        <input type="text" id="messageInput" placeholder="Type your message..."
+                            style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;"
+                            required>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane"></i> Send
                         </button>
@@ -152,33 +168,77 @@ $pageTitle = 'Messages';
     <script>
         let currentReceiverId = null;
         let messageRefreshInterval = null;
+        let allTeachers = [];
 
-        // Load teacher and open chat
+        // Load teachers and setup selector
         async function loadTeacherChat() {
             try {
-                console.log('Loading teacher...');
+                console.log('Loading teachers...');
                 const response = await fetch('../api/get_my_teacher.php');
                 const result = await response.json();
-                console.log('Teacher API response:', result);
+                console.log('Teachers API response:', result);
 
-                if (result.success && result.data) {
-                    currentReceiverId = result.data.user_id;
-                    document.getElementById('receiverId').value = result.data.user_id;
-                    document.getElementById('chatTitle').innerHTML = `<i class="fas fa-user-circle"></i> ${result.data.full_name} (Teacher)`;
+                if (result.success && result.data && result.data.length > 0) {
+                    allTeachers = result.data;
+                    const teacherSelect = document.getElementById('teacherSelect');
+                    const teacherSelector = document.getElementById('teacherSelector');
                     
-                    await loadMessages(result.data.user_id);
+                    // Populate dropdown
+                    teacherSelect.innerHTML = '<option value="">-- Choose a teacher --</option>';
+                    allTeachers.forEach(teacher => {
+                        teacherSelect.innerHTML += `<option value="${teacher.user_id}">${teacher.full_name}</option>`;
+                    });
 
-                    // Auto-refresh messages
-                    if (messageRefreshInterval) clearInterval(messageRefreshInterval);
-                    messageRefreshInterval = setInterval(() => loadMessages(result.data.user_id), 5000);
+                    // If multiple teachers, show selector
+                    if (allTeachers.length > 1) {
+                        teacherSelector.style.display = 'block';
+                        document.getElementById('chatTitle').innerHTML = `<i class="fas fa-users"></i> Select a teacher to start chatting`;
+                        document.getElementById('messagesContainer').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Please select a teacher from the dropdown above to view messages.</p>';
+                    } else {
+                        // Single teacher - auto-select
+                        teacherSelector.style.display = 'none';
+                        selectTeacher(allTeachers[0].user_id, allTeachers[0].full_name);
+                    }
                 } else {
                     document.getElementById('messagesContainer').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">You need to join a class first! Use the "Join Class" button in the sidebar.</p>';
+                    document.getElementById('chatTitle').innerHTML = '<i class="fas fa-user-circle"></i> No Teacher';
                 }
             } catch (error) {
-                console.error('Error loading teacher:', error);
+                console.error('Error loading teachers:', error);
                 document.getElementById('messagesContainer').innerHTML = '<p style="text-align: center; color: #EF4444;">Failed to load teacher information. Please refresh the page.</p>';
             }
         }
+
+        // Select a teacher for messaging
+        function selectTeacher(teacherId, teacherName) {
+            currentReceiverId = teacherId;
+            document.getElementById('receiverId').value = teacherId;
+            document.getElementById('chatTitle').innerHTML = `<i class="fas fa-user-circle"></i> ${teacherName} (Teacher)`;
+            
+            loadMessages(teacherId);
+
+            // Auto-refresh messages
+            if (messageRefreshInterval) clearInterval(messageRefreshInterval);
+            messageRefreshInterval = setInterval(() => loadMessages(teacherId), 5000);
+        }
+
+        // Handle teacher selection change
+        document.getElementById('teacherSelect').addEventListener('change', function() {
+            const selectedId = this.value;
+            if (selectedId) {
+                const selectedTeacher = allTeachers.find(t => t.user_id == selectedId);
+                if (selectedTeacher) {
+                    selectTeacher(selectedTeacher.user_id, selectedTeacher.full_name);
+                }
+            } else {
+                // Cleared selection
+                currentReceiverId = null;
+                document.getElementById('receiverId').value = '';
+                document.getElementById('chatTitle').innerHTML = '<i class="fas fa-users"></i> Select a teacher to start chatting';
+                document.getElementById('messagesContainer').innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Please select a teacher from the dropdown above to view messages.</p>';
+                if (messageRefreshInterval) clearInterval(messageRefreshInterval);
+            }
+        });
 
         // Load messages
         async function loadMessages(userId) {
@@ -223,7 +283,7 @@ $pageTitle = 'Messages';
         }
 
         // Send message
-        document.getElementById('messageForm').addEventListener('submit', async function(e) {
+        document.getElementById('messageForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const messageInput = document.getElementById('messageInput');
@@ -261,4 +321,5 @@ $pageTitle = 'Messages';
         loadTeacherChat();
     </script>
 </body>
+
 </html>
