@@ -35,7 +35,7 @@ include __DIR__ . '/../includes/header.php';
 
             <div class="form-group">
                 <label for="fullName"><i class="fas fa-user"></i> Full Name</label>
-                <input type="text" id="fullName" name="full_name" placeholder="John Doe" required>
+                <input type="text" id="fullName" name="full_name" placeholder="Akosua Hayford" required>
                 <span class="error-text" id="nameError"></span>
             </div>
 

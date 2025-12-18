@@ -48,7 +48,7 @@ include __DIR__ . '/../includes/header.php';
             <div class="form-group" style="display: flex; align-items: center; margin-bottom: 1.5rem;">
                 <input type="checkbox" id="remember" name="remember" value="true"
                     style="width: auto; margin-right: 0.5rem;">
-                <label for="remember" style="margin-bottom: 0;">Remember me for 30 days</label>
+                <label for="remember" style="margin-bottom: 0;">Remember me</label>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">
