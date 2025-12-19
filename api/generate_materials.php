@@ -142,18 +142,14 @@ try {
 
     if ($generatedCount > 0) {
         $message = 'Study materials generated successfully (' . $generatedCount . ' of 3)';
-        if (!empty($errors)) {
-            $message .= '. Some items failed: ' . implode('; ', $errors);
-        }
         sendJsonResponse(true, $results, $message);
     } else {
-        // All failed - provide detailed error
-        $detailedError = 'Failed to generate any study materials. Errors: ' . implode(' | ', $errors);
-        error_log("All materials failed: " . $detailedError);
-        sendJsonResponse(false, ['errors' => $errors], $detailedError);
+        // All failed - provide friendly message instead of errors
+        error_log("All materials failed: " . implode(' | ', $errors));
+        sendJsonResponse(false, ['errors' => $errors], 'Our AI service is experiencing high demand. Please try generating materials again in a few minutes. Your note has been saved and is ready when you return.');
     }
 } catch (Exception $e) {
     error_log("Fatal generation error: " . $e->getMessage());
-    sendJsonResponse(false, null, 'Error generating materials: ' . $e->getMessage());
+    sendJsonResponse(false, null, 'Unable to generate materials at this time. Please try again in a few minutes.');
 }
 ?>
