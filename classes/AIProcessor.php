@@ -209,15 +209,9 @@ class AIProcessor
                 return $response;
             }
 
-            // Check if it's a rate limit error
-            if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
-                error_log("⚠️ Gemini rate limit hit");
-                return ['success' => false, 'message' => 'AI service rate limit reached. Please try again in a few minutes or check your API credits.'];
-            }
-
-            // API failed, log error
-            error_log("Gemini API failed: " . ($response['message'] ?? 'Unknown error'));
-            return $response;
+            // API failed - use mock data fallback
+            error_log("⚠️ Gemini API failed, using mock data: " . ($response['message'] ?? 'Unknown error'));
+            return $this->getMockResponse($prompt);
         }
         // Try Anthropic Claude API if configured
         elseif (strpos($this->apiUrl, 'anthropic') !== false) {
@@ -228,15 +222,9 @@ class AIProcessor
                 return $response;
             }
 
-            // Check if it's a rate limit error
-            if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
-                error_log("⚠️ Claude rate limit hit");
-                return ['success' => false, 'message' => 'AI service rate limit reached. Please try again in a few minutes or check your API credits.'];
-            }
-
-            // API failed, log error and return failure
-            error_log("Claude API failed: " . ($response['message'] ?? 'Unknown error'));
-            return $response;
+            // API failed - use mock data fallback
+            error_log("⚠️ Claude API failed, using mock data: " . ($response['message'] ?? 'Unknown error'));
+            return $this->getMockResponse($prompt);
         }
         // Try OpenRouter/OpenAI compatible API if configured
         elseif (strpos($this->apiUrl, 'openrouter') !== false || strpos($this->apiUrl, 'openai') !== false) {
@@ -247,16 +235,9 @@ class AIProcessor
                 return $response;
             }
 
-            // Check if it's a rate limit error
-            if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
-                error_log("⚠️ OpenRouter rate limit exceeded");
-                return ['success' => false, 'message' => 'AI service rate limit reached. Please try again in a few minutes or check your API credits at OpenRouter.'];
-            }
-
-            // API failed for other reasons, log error
-            error_log("OpenRouter API failed: " . ($response['message'] ?? 'Unknown error'));
-            error_log("This means the AI service is not responding. Check your API key and internet connection.");
-            return $response;
+            // API failed - use mock data fallback
+            error_log("⚠️ OpenRouter API failed, using mock data: " . ($response['message'] ?? 'Unknown error'));
+            return $this->getMockResponse($prompt);
         }
 
         // No valid API configured
