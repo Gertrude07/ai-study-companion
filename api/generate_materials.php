@@ -97,6 +97,9 @@ try {
         error_log("Summary generation error: " . ($summaryResult['message'] ?? 'No message'));
     }
 
+    // Add delay to avoid rate limiting
+    sleep(2);
+
     // Generate 1 flashcard set (15 cards)
     $flashcardsResult = $aiProcessor->generateFlashcards($noteText, 15);
     if ($flashcardsResult['success']) {
@@ -113,6 +116,9 @@ try {
         $errors[] = "Flashcards generation failed: " . ($flashcardsResult['message'] ?? 'AI did not respond');
         error_log("Flashcards generation error: " . ($flashcardsResult['message'] ?? 'No message'));
     }
+
+    // Add delay to avoid rate limiting
+    sleep(2);
 
     // Generate Quiz
     $quizResult = $aiProcessor->generateQuiz($noteText);
