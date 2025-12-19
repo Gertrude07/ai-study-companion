@@ -211,8 +211,8 @@ class AIProcessor
 
             // Check if it's a rate limit error
             if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
-                error_log("⚠️ Gemini rate limit hit, falling back to mock data");
-                return $this->getMockResponse($prompt);
+                error_log("⚠️ Gemini rate limit hit");
+                return ['success' => false, 'message' => 'AI service rate limit reached. Please try again in a few minutes or check your API credits.'];
             }
 
             // API failed, log error
@@ -230,8 +230,8 @@ class AIProcessor
 
             // Check if it's a rate limit error
             if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
-                error_log("⚠️ Rate limit hit, falling back to mock data");
-                return $this->getMockResponse($prompt);
+                error_log("⚠️ Claude rate limit hit");
+                return ['success' => false, 'message' => 'AI service rate limit reached. Please try again in a few minutes or check your API credits.'];
             }
 
             // API failed, log error and return failure
@@ -247,10 +247,10 @@ class AIProcessor
                 return $response;
             }
 
-            // Check if it's a rate limit error - fall back to mock
+            // Check if it's a rate limit error
             if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
-                error_log("⚠️ Rate limit exceeded, using intelligent mock fallback");
-                return $this->getMockResponse($prompt);
+                error_log("⚠️ OpenRouter rate limit exceeded");
+                return ['success' => false, 'message' => 'AI service rate limit reached. Please try again in a few minutes or check your API credits at OpenRouter.'];
             }
 
             // API failed for other reasons, log error
