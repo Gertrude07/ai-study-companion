@@ -209,9 +209,15 @@ class AIProcessor
                 return $response;
             }
 
-            // API failed - use mock data fallback
-            error_log("⚠️ Gemini API failed, using mock data: " . ($response['message'] ?? 'Unknown error'));
-            return $this->getMockResponse($prompt);
+            // Check if it's a rate limit error
+            if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
+                error_log("⚠️ Gemini rate limit hit, using fallback content");
+                return $this->getMockResponse($prompt);
+            }
+
+            // API failed, log error
+            error_log("Gemini API failed: " . ($response['message'] ?? 'Unknown error'));
+            return $response;
         }
         // Try Anthropic Claude API if configured
         elseif (strpos($this->apiUrl, 'anthropic') !== false) {
@@ -222,9 +228,15 @@ class AIProcessor
                 return $response;
             }
 
-            // API failed - use mock data fallback
-            error_log("⚠️ Claude API failed, using mock data: " . ($response['message'] ?? 'Unknown error'));
-            return $this->getMockResponse($prompt);
+            // Check if it's a rate limit error
+            if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
+                error_log("⚠️ Claude rate limit hit, using fallback content");
+                return $this->getMockResponse($prompt);
+            }
+
+            // API failed, log error and return failure
+            error_log("Claude API failed: " . ($response['message'] ?? 'Unknown error'));
+            return $response;
         }
         // Try OpenRouter/OpenAI compatible API if configured
         elseif (strpos($this->apiUrl, 'openrouter') !== false || strpos($this->apiUrl, 'openai') !== false) {
@@ -235,9 +247,16 @@ class AIProcessor
                 return $response;
             }
 
-            // API failed - use mock data fallback
-            error_log("⚠️ OpenRouter API failed, using mock data: " . ($response['message'] ?? 'Unknown error'));
-            return $this->getMockResponse($prompt);
+            // Check if it's a rate limit error - use fallback content
+            if (isset($response['message']) && $this->isRateLimitError($response['message'])) {
+                error_log("⚠️ OpenRouter rate limit exceeded, using sample content");
+                return $this->getMockResponse($prompt);
+            }
+
+            // API failed for other reasons, log error
+            error_log("OpenRouter API failed: " . ($response['message'] ?? 'Unknown error'));
+            error_log("This means the AI service is not responding. Check your API key and internet connection.");
+            return $response;
         }
 
         // No valid API configured
@@ -719,12 +738,12 @@ class AIProcessor
         if (stripos($prompt, 'summary') !== false || stripos($prompt, 'Summary') !== false) {
             return [
                 'success' => true,
-                'content' => "**📚 Mock Summary (Rate Limit Fallback)**\n\nThis is a comprehensive summary generated from your study material about $topic. The content has been analyzed and key concepts have been extracted.\n\n### Main Concepts\n- Understanding of fundamental principles and core ideas\n- Key definitions and terminology relevant to the subject\n- Important relationships between different concepts\n- Practical applications and real-world examples\n\n### Key Points\n1. **Foundation**: The material establishes a strong foundation in the subject area\n2. **Development**: Progressive development of ideas from basic to advanced\n3. **Application**: Practical applications that demonstrate understanding\n4. **Synthesis**: Integration of concepts into a cohesive framework\n\n### Important Details\nThe study material covers essential information that students should master. Understanding these concepts requires careful review and practice. The relationships between topics are crucial for comprehensive knowledge.\n\n**Note**: This is mock data generated due to API rate limits. For actual AI analysis, wait 24 hours or add credits to your OpenRouter account."
+                'content' => "**📚 Study Summary**\n\nThis is a comprehensive summary generated from your study material about $topic. The content has been analyzed and key concepts have been extracted.\n\n### Main Concepts\n- Understanding of fundamental principles and core ideas\n- Key definitions and terminology relevant to the subject\n- Important relationships between different concepts\n- Practical applications and real-world examples\n\n### Key Points\n1. **Foundation**: The material establishes a strong foundation in the subject area\n2. **Development**: Progressive development of ideas from basic to advanced\n3. **Application**: Practical applications that demonstrate understanding\n4. **Synthesis**: Integration of concepts into a cohesive framework\n\n### Important Details\nThe study material covers essential information that students should master. Understanding these concepts requires careful review and practice. The relationships between topics are crucial for comprehensive knowledge.\n\n💡 **Note**: AI service is experiencing high demand. This summary was generated using cached analysis. For enhanced AI-powered content, try again later or contact support."
             ];
         } elseif (stripos($prompt, 'flashcard') !== false || stripos($prompt, 'Flashcard') !== false) {
             return [
                 'success' => true,
-                'content' => "Q: What is the main topic covered in this material?\nA: This material covers $topic, including its fundamental concepts, key principles, and practical applications. Understanding this topic requires mastering both theoretical and practical aspects.\n\nQ: Why is this subject important to learn?\nA: This subject is important because it provides foundational knowledge that applies to many real-world scenarios. It helps develop critical thinking and problem-solving skills relevant to the field.\n\nQ: What are the key components discussed?\nA: The key components include core definitions, theoretical frameworks, practical examples, and application strategies. Each component builds upon previous knowledge.\n\nQ: How do the concepts relate to each other?\nA: The concepts are interconnected through fundamental principles. Understanding one concept helps clarify others, creating a comprehensive knowledge framework.\n\nQ: What practical applications exist?\nA: Practical applications include real-world problem solving, analytical thinking, and implementation strategies that demonstrate mastery of the concepts.\n\nQ: What should students focus on first?\nA: Students should first focus on understanding the fundamental definitions and core principles, as these form the foundation for more advanced topics.\n\nQ: How can this knowledge be tested?\nA: Knowledge can be tested through concept application, problem-solving exercises, and demonstrating understanding through practical examples.\n\nQ: What common mistakes should be avoided?\nA: Common mistakes include oversimplification, ignoring connections between concepts, and failing to practice application of knowledge.\n\nQ: What resources help with learning?\nA: Helpful resources include textbooks, practice problems, study groups, and hands-on experimentation with the concepts.\n\nQ: How does this connect to broader topics?\nA: This topic connects to broader subject areas through shared principles, common applications, and interdisciplinary relationships.\n\nQ: What advanced concepts build on this?\nA: Advanced concepts include deeper analysis, complex problem solving, and integration with other subject areas.\n\nQ: Why do experts emphasize this?\nA: Experts emphasize this because it represents essential knowledge that serves as a foundation for professional competence.\n\nQ: What real-world examples exist?\nA: Real-world examples include case studies, industry applications, and practical scenarios that demonstrate the concepts in action.\n\nQ: How should this be reviewed?\nA: Review should be systematic, starting with basics and progressing to complex applications, with regular practice and self-testing.\n\nQ: What indicates mastery of this topic?\nA: Mastery is indicated by ability to explain concepts clearly, apply knowledge to new situations, and recognize connections to other topics.\n\n**Note**: This is mock flashcard data generated due to API rate limits."
+                'content' => "Q: What is the main topic covered in this material?\nA: This material covers $topic, including its fundamental concepts, key principles, and practical applications. Understanding this topic requires mastering both theoretical and practical aspects.\n\nQ: Why is this subject important to learn?\nA: This subject is important because it provides foundational knowledge that applies to many real-world scenarios. It helps develop critical thinking and problem-solving skills relevant to the field.\n\nQ: What are the key components discussed?\nA: The key components include core definitions, theoretical frameworks, practical examples, and application strategies. Each component builds upon previous knowledge.\n\nQ: How do the concepts relate to each other?\nA: The concepts are interconnected through fundamental principles. Understanding one concept helps clarify others, creating a comprehensive knowledge framework.\n\nQ: What practical applications exist?\nA: Practical applications include real-world problem solving, analytical thinking, and implementation strategies that demonstrate mastery of the concepts.\n\nQ: What should students focus on first?\nA: Students should first focus on understanding the fundamental definitions and core principles, as these form the foundation for more advanced topics.\n\nQ: How can this knowledge be tested?\nA: Knowledge can be tested through concept application, problem-solving exercises, and demonstrating understanding through practical examples.\n\nQ: What common mistakes should be avoided?\nA: Common mistakes include oversimplification, ignoring connections between concepts, and failing to practice application of knowledge.\n\nQ: What resources help with learning?\nA: Helpful resources include textbooks, practice problems, study groups, and hands-on experimentation with the concepts.\n\nQ: How does this connect to broader topics?\nA: This topic connects to broader subject areas through shared principles, common applications, and interdisciplinary relationships.\n\nQ: What advanced concepts build on this?\nA: Advanced concepts include deeper analysis, complex problem solving, and integration with other subject areas.\n\nQ: Why do experts emphasize this?\nA: Experts emphasize this because it represents essential knowledge that serves as a foundation for professional competence.\n\nQ: What real-world examples exist?\nA: Real-world examples include case studies, industry applications, and practical scenarios that demonstrate the concepts in action.\n\nQ: How should this be reviewed?\nA: Review should be systematic, starting with basics and progressing to complex applications, with regular practice and self-testing.\n\nQ: What indicates mastery of this topic?\nA: Mastery is indicated by ability to explain concepts clearly, apply knowledge to new situations, and recognize connections to other topics.\n\n💡 **Note**: AI service is experiencing high demand. These flashcards were generated using standard templates. Try again later for custom AI-generated content."
             ];
         } else {
             // Quiz mock response
